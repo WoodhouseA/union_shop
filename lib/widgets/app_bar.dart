@@ -112,6 +112,40 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 }
 
+class _MobileMenu extends StatelessWidget {
+  const _MobileMenu();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            },
+          ),
+          ListTile(
+            title: const Text('About Us'),
+            onTap: () {
+              Navigator.pushNamed(context, '/about');
+            },
+          ),
+          ListTile(
+            title: const Text('Products'),
+            onTap: () {
+              Navigator.pushNamed(context, '/product');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class AppBarButton extends StatelessWidget {
   const AppBarButton({
     super.key,
