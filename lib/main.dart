@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/about_us_page.dart';
 import 'package:union_shop/widgets/app_bar.dart';
+import 'package:union_shop/widgets/footer.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -170,19 +171,7 @@ class HomeScreen extends StatelessWidget {
             ),
 
             // Footer
-            Container(
-              width: double.infinity,
-              color: Colors.grey[50],
-              padding: const EdgeInsets.all(24),
-              child: const Text(
-                'Placeholder Footer',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+            const Footer(),
           ],
         ),
       ),
