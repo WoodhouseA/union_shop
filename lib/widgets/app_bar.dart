@@ -12,10 +12,27 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   bool _isMenuOpen = false;
+  final GlobalKey _menuKey = GlobalKey();
+  double _menuHeight = 0;
 
   void _toggleMenu() {
     setState(() {
       _isMenuOpen = !_isMenuOpen;
+      if (_isMenuOpen) {
+        // After the frame is rendered, calculate the height of the menu
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final RenderBox? renderBox =
+              _menuKey.currentContext?.findRenderObject() as RenderBox?;
+          if (renderBox != null) {
+            setState(() {
+              _menuHeight = renderBox.size.height;
+            });
+          }
+        });
+      } else {
+        // When closing, reset the height
+        _menuHeight = 0;
+      }
     });
   }
 
@@ -29,91 +46,101 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 100,
-          color: Colors.white,
-          child: Column(
-            children: [
-              // Top banner
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                color: const Color(0xFF4d2963),
-                child: const Text(
-                  'UNIVERSITY OF PORTSMOUTH SHOP',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-              // Main header
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          navigateToHome(context);
-                        },
-                        child: Image.network(
-                          'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
-                          height: 18,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[300],
-                              width: 18,
-                              height: 18,
-                              child: const Center(
-                                child: Icon(Icons.image_not_supported,
-                                    color: Colors.grey),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const Spacer(),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 600),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AppBarButton(
-                              icon: Icons.search,
-                              onPressed: placeholderCallbackForButtons,
-                            ),
-                            AppBarButton(
-                              icon: Icons.person_outline,
-                              onPressed: placeholderCallbackForButtons,
-                            ),
-                            AppBarButton(
-                              icon: Icons.shopping_bag_outlined,
-                              onPressed: placeholderCallbackForButtons,
-                            ),
-                            AppBarButton(
-                              icon: Icons.menu,
-                              onPressed: _toggleMenu,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    // Use PreferredSize to dynamically adjust the app bar's height
+    return PreferredSize(
+      preferredSize: Size.fromHeight(100 + _menuHeight),
+      child: Material(
+        elevation: 1.0,
+        child: Column(
+          children: [
+            Container(
+              height: 100,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  // Top banner
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    color: const Color(0xFF4d2963),
+                    child: const Text(
+                      'UNIVERSITY OF PORTSMOUTH SHOP',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
-                ),
+                  // Main header
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              navigateToHome(context);
+                            },
+                            child: Image.network(
+                              'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
+                              height: 18,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[300],
+                                  width: 18,
+                                  height: 18,
+                                  child: const Center(
+                                    child: Icon(Icons.image_not_supported,
+                                        color: Colors.grey),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const Spacer(),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 600),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AppBarButton(
+                                  icon: Icons.search,
+                                  onPressed: placeholderCallbackForButtons,
+                                ),
+                                AppBarButton(
+                                  icon: Icons.person_outline,
+                                  onPressed: placeholderCallbackForButtons,
+                                ),
+                                AppBarButton(
+                                  icon: Icons.shopping_bag_outlined,
+                                  onPressed: placeholderCallbackForButtons,
+                                ),
+                                AppBarButton(
+                                  icon: Icons.menu,
+                                  onPressed: _toggleMenu,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            if (_isMenuOpen)
+              _MobileMenu(
+                key: _menuKey,
+              ),
+          ],
         ),
-        if (_isMenuOpen) const _MobileMenu(),
-      ],
+      ),
     );
   }
 }
 
 class _MobileMenu extends StatelessWidget {
-  const _MobileMenu();
+  const _MobileMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
