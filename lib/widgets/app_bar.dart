@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/widgets/mobile_menu.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -29,10 +30,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    // Use a Stack to overlay the menu on top of the page content.
-    // This avoids the RenderFlex overflow by not trying to resize the AppBar.
     return Stack(
-      // The clipBehavior is set to none to allow the menu to draw outside of the bounds of the app bar.
       clipBehavior: Clip.none,
       children: [
         // The actual AppBar, with a fixed height.
@@ -117,50 +115,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
         // The dropdown menu, positioned below the AppBar.
         if (_isMenuOpen)
-          Positioned(
+          const Positioned(
             top: 100, // Position it just below the AppBar
             left: 0,
             right: 0,
             child: Material(
               elevation: 1.0, // Give it a slight shadow to stand out
-              child: const _MobileMenu(),
+              child: MobileMenu(),
             ),
           ),
       ],
-    );
-  }
-}
-
-class _MobileMenu extends StatelessWidget {
-  const _MobileMenu();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-            },
-          ),
-          ListTile(
-            title: const Text('About Us'),
-            onTap: () {
-              Navigator.pushNamed(context, '/about');
-            },
-          ),
-          ListTile(
-            title: const Text('Products'),
-            onTap: () {
-              Navigator.pushNamed(context, '/product');
-            },
-          ),
-        ],
-      ),
     );
   }
 }
