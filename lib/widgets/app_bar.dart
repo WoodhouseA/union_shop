@@ -12,27 +12,10 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   bool _isMenuOpen = false;
-  final GlobalKey _menuKey = GlobalKey();
-  double _menuHeight = 0;
 
   void _toggleMenu() {
     setState(() {
       _isMenuOpen = !_isMenuOpen;
-      if (_isMenuOpen) {
-        // After the frame is rendered, calculate the height of the menu
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          final RenderBox? renderBox =
-              _menuKey.currentContext?.findRenderObject() as RenderBox?;
-          if (renderBox != null) {
-            setState(() {
-              _menuHeight = renderBox.size.height;
-            });
-          }
-        });
-      } else {
-        // When closing, reset the height
-        _menuHeight = 0;
-      }
     });
   }
 
@@ -46,101 +29,110 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    // Use PreferredSize to dynamically adjust the app bar's height
-    return PreferredSize(
-      preferredSize: Size.fromHeight(100 + _menuHeight),
-      child: Material(
-        elevation: 1.0,
-        child: Column(
-          children: [
-            Container(
-              height: 100,
-              color: Colors.white,
-              child: Column(
-                children: [
-                  // Top banner
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    color: const Color(0xFF4d2963),
-                    child: const Text(
-                      'UNIVERSITY OF PORTSMOUTH SHOP',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
+    // Use a Stack to overlay the menu on top of the page content.
+    // This avoids the RenderFlex overflow by not trying to resize the AppBar.
+    return Stack(
+      // The clipBehavior is set to none to allow the menu to draw outside of the bounds of the app bar.
+      clipBehavior: Clip.none,
+      children: [
+        // The actual AppBar, with a fixed height.
+        Material(
+          elevation: 1.0,
+          child: Container(
+            height: 100,
+            color: Colors.white,
+            child: Column(
+              children: [
+                // Top banner
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  color: const Color(0xFF4d2963),
+                  child: const Text(
+                    'UNIVERSITY OF PORTSMOUTH SHOP',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  // Main header
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              navigateToHome(context);
+                ),
+                // Main header
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            navigateToHome(context);
+                          },
+                          child: Image.network(
+                            'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
+                            height: 18,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[300],
+                                width: 18,
+                                height: 18,
+                                child: const Center(
+                                  child: Icon(Icons.image_not_supported,
+                                      color: Colors.grey),
+                                ),
+                              );
                             },
-                            child: Image.network(
-                              'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
-                              height: 18,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  width: 18,
-                                  height: 18,
-                                  child: const Center(
-                                    child: Icon(Icons.image_not_supported,
-                                        color: Colors.grey),
-                                  ),
-                                );
-                              },
-                            ),
                           ),
-                          const Spacer(),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 600),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AppBarButton(
-                                  icon: Icons.search,
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                AppBarButton(
-                                  icon: Icons.person_outline,
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                AppBarButton(
-                                  icon: Icons.shopping_bag_outlined,
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                AppBarButton(
-                                  icon: Icons.menu,
-                                  onPressed: _toggleMenu,
-                                ),
-                              ],
-                            ),
+                        ),
+                        const Spacer(),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AppBarButton(
+                                icon: Icons.search,
+                                onPressed: placeholderCallbackForButtons,
+                              ),
+                              AppBarButton(
+                                icon: Icons.person_outline,
+                                onPressed: placeholderCallbackForButtons,
+                              ),
+                              AppBarButton(
+                                icon: Icons.shopping_bag_outlined,
+                                onPressed: placeholderCallbackForButtons,
+                              ),
+                              AppBarButton(
+                                icon: Icons.menu,
+                                onPressed: _toggleMenu,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            if (_isMenuOpen)
-              _MobileMenu(
-                key: _menuKey,
-              ),
-          ],
+          ),
         ),
-      ),
+
+        // The dropdown menu, positioned below the AppBar.
+        if (_isMenuOpen)
+          Positioned(
+            top: 100, // Position it just below the AppBar
+            left: 0,
+            right: 0,
+            child: Material(
+              elevation: 1.0, // Give it a slight shadow to stand out
+              child: const _MobileMenu(),
+            ),
+          ),
+      ],
     );
   }
 }
 
 class _MobileMenu extends StatelessWidget {
-  const _MobileMenu({super.key});
+  const _MobileMenu();
 
   @override
   Widget build(BuildContext context) {
