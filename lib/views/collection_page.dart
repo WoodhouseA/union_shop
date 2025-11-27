@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/views/product_page.dart';
-import 'package:union_shop/widgets/footer.dart';
+import 'package:union_shop/widgets/page_wrapper.dart';
 
 class CollectionPage extends StatefulWidget {
   final String collectionId;
@@ -31,9 +31,8 @@ class _CollectionPageState extends State<CollectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.collectionName)),
-      body: FutureBuilder<List<Product>>(
+    return PageWrapper(
+      child: FutureBuilder<List<Product>>(
         future: _productsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -41,7 +40,8 @@ class _CollectionPageState extends State<CollectionPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No products found in this collection.'));
+            return const Center(
+                child: Text('No products found in this collection.'));
           } else {
             final products = snapshot.data!;
             return GridView.builder(
@@ -61,7 +61,6 @@ class _CollectionPageState extends State<CollectionPage> {
           }
         },
       ),
-      bottomNavigationBar: const Footer(),
     );
   }
 }
