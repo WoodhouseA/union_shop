@@ -1,47 +1,65 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:union_shop/widgets/app_bar.dart';
+import 'package:union_shop/widgets/footer.dart';
 
-class CollectionsPage extends StatelessWidget {
+class CollectionsPage extends StatefulWidget {
   const CollectionsPage({super.key});
 
-  final List<Map<String, dynamic>> collections = const [
-    {
-      'name': 'Summer Collection',
-      'image': 'https://picsum.photos/seed/summer/400/300',
-    },
-    {
-      'name': 'Winter Collection',
-      'image': 'https://picsum.photos/seed/winter/400/300',
-    },
-    {
-      'name': 'Spring Collection',
-      'image': 'https://picsum.photos/seed/spring/400/300',
-    },
-    {
-      'name': 'Autumn Collection',
-      'image': 'https://picsum.photos/seed/autumn/400/300',
-    },
-  ];
+  @override
+  State<CollectionsPage> createState() => _CollectionsPageState();
+}
+
+class _CollectionsPageState extends State<CollectionsPage> {
+  late Future<List<Map<String, dynamic>>> _collectionsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _collectionsFuture = _loadCollections();
+  }
+
+  Future<List<Map<String, dynamic>>> _loadCollections() async {
+    final String jsonString =
+        await rootBundle.loadString('assets/collections.json');
+    final List<dynamic> jsonResponse = json.decode(jsonString);
+    return jsonResponse.cast<Map<String, dynamic>>();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Collections'),
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          childAspectRatio: 0.8,
-        ),
-        itemCount: collections.length,
-        itemBuilder: (context, index) {
-          final collection = collections[index];
-          return _CollectionCard(collection: collection);
+      appBar: const CustomAppBar(),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _collectionsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No collections found.'));
+          } else {
+            final collections = snapshot.data!;
+            return GridView.builder(
+              padding: const EdgeInsets.all(16.0),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: collections.length,
+              itemBuilder: (context, index) {
+                final collection = collections[index];
+                return _CollectionCard(collection: collection);
+              },
+            );
+          }
         },
       ),
+      bottomNavigationBar: const Footer(),
     );
   }
 }
