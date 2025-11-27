@@ -40,6 +40,8 @@ class _CollectionsPageState extends State<CollectionsPage> {
         } else {
           final collections = snapshot.data!;
           return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
