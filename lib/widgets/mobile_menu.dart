@@ -5,30 +5,34 @@ class MobileMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-            },
-          ),
-          ListTile(
-            title: const Text('About Us'),
-            onTap: () {
-              Navigator.pushNamed(context, '/about');
-            },
-          ),
-          ListTile(
-            title: const Text('Products'),
-            onTap: () {
-              Navigator.pushNamed(context, '/product');
-            },
-          ),
-        ],
+    return Material(
+      elevation: 10,
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('Home'),
+              onTap: () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
+              },
+            ),
+            ListTile(
+              title: const Text('About Us'),
+              onTap: () {
+                Navigator.pushNamed(context, '/about');
+              },
+            ),
+            ListTile(
+              title: const Text('Products'),
+              onTap: () {
+                Navigator.pushNamed(context, '/product');
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
