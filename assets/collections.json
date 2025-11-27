@@ -1,0 +1,22 @@
+[
+    {
+        "id": "summer",
+        "name": "Summer Collection",
+        "image": "https://picsum.photos/seed/summer/400/300"
+    },
+    {
+        "id": "winter",
+        "name": "Winter Collection",
+        "image": "https://picsum.photos/seed/winter/400/300"
+    },
+    {
+        "id": "spring",
+        "name": "Spring Collection",
+        "image": "https://picsum.photos/seed/spring/400/300"
+    },
+    {
+        "id": "autumn",
+        "name": "Autumn Collection",
+        "image": "https://picsum.photos/seed/autumn/400/300"
+    }
+]
