@@ -17,10 +17,11 @@ class CartPage extends StatelessWidget {
           )
         : Column(
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: cartItems.length,
+                itemBuilder: (context, index) {
                     final item = cartItems[index];
                     return ListTile(
                       leading: Image.network(
@@ -112,7 +113,6 @@ class CartPage extends StatelessWidget {
                     );
                   },
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
