@@ -107,6 +107,25 @@ void main() {
       // Ignore
     }
   }
+
+  testWidgets('HomeScreen displays hero section and products', (WidgetTester tester) async {
+    // Set surface size to ensure grid items fit (desktop size)
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await waitForLoad(tester);
+
+    // Check Hero Section
+    expect(find.text('CHECK OUT THE SALE!'), findsNWidgets(2)); // Title and Button
+    expect(find.text("Don't miss out on our exclusive sale items!"), findsOneWidget);
+
+    // Check Products Section
+    expect(find.text('OUR PRODUCTS!'), findsOneWidget);
+    expect(find.text('Test Product 1'), findsOneWidget);
+    expect(find.text('Test Product 2'), findsOneWidget);
+  });
 }
 
 // Mock HTTP classes for NetworkImage
