@@ -237,4 +237,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(CartPage), findsOneWidget);
   });
+
+  testWidgets('Router navigates to Auth', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    testRouter.go('/auth');
+    await tester.pumpAndSettle();
+    expect(find.byType(AuthPage), findsOneWidget);
+  });
+
+  testWidgets('Router navigates to Print Shack', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    testRouter.go('/print-shack');
+    await tester.pumpAndSettle();
+    expect(find.byType(PrintShackPage), findsOneWidget);
+  });
+
+  testWidgets('Router navigates to Print Shack About', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    testRouter.go('/print-shack-about');
+    await tester.pumpAndSettle();
+    expect(find.byType(PrintShackAboutPage), findsOneWidget);
+  });
 }
