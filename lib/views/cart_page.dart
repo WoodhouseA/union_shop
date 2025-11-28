@@ -34,6 +34,7 @@ class CartPage extends StatelessWidget {
                         children: [
                           Text('£${item.product.price.toStringAsFixed(2)}'),
                           if (item.size != null) Text('Size: ${item.size}'),
+                          if (item.color != null) Text('Color: ${item.color}'),
                         ],
                       ),
                       trailing: Row(
@@ -43,7 +44,7 @@ class CartPage extends StatelessWidget {
                             icon: const Icon(Icons.remove),
                             onPressed: () {
                               cartService.updateQuantity(
-                                  item.product.id, item.quantity - 1, item.size);
+                                  item.product.id, item.quantity - 1, item.size, item.color);
                             },
                           ),
                           Text(item.quantity.toString()),
@@ -51,13 +52,13 @@ class CartPage extends StatelessWidget {
                             icon: const Icon(Icons.add),
                             onPressed: () {
                               cartService.updateQuantity(
-                                  item.product.id, item.quantity + 1, item.size);
+                                  item.product.id, item.quantity + 1, item.size, item.color);
                             },
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
-                              cartService.removeFromCart(item.product.id, item.size);
+                              cartService.removeFromCart(item.product.id, item.size, item.color);
                             },
                           ),
                         ],
