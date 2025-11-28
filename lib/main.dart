@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 const Text(
-                  'OUR FAVOURITE PICKS!',
+                  'OUR PRODUCTS!',
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.black,
@@ -154,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(child: Text('No products found.'));
                     } else {
-                      // Display first 4 products
-                      final products = snapshot.data!.take(4).toList();
+                      // Display all products
+                      final products = snapshot.data!;
                       return GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
