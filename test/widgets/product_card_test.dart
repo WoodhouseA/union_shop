@@ -64,4 +64,22 @@ void main() {
     final Text salePriceText = tester.widget(salePriceFinder);
     expect(salePriceText.style?.color, Colors.red);
   });
+
+  testWidgets('ProductCard handles image error', (WidgetTester tester) async {
+    final product = Product(
+      id: '1',
+      collectionId: 'col1',
+      name: 'Test Product',
+      price: 10.0,
+      onSale: false,
+      imageUrl: 'invalid-url',
+      sizes: [],
+      colors: [],
+    );
+
+    await tester.pumpWidget(createTestWidget(product));
+    await tester.pump(); // Allow image to fail loading
+
+    expect(find.byIcon(Icons.error), findsOneWidget);
+  });
 }
