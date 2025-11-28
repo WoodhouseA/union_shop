@@ -43,4 +43,15 @@ void main() {
           ),
     );
   }
+
+  testWidgets('MobileMenu displays all top-level items',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget());
+
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('About Us'), findsOneWidget);
+    expect(find.text('Collections'), findsOneWidget);
+    expect(find.text('The Print Shack'), findsOneWidget);
+    expect(find.text('Sale!'), findsOneWidget);
+  });
 }
