@@ -109,4 +109,27 @@ void main() {
     expect(find.text('£15.00'), findsOneWidget); // Sale price for prod 1
     expect(find.text('£40.00'), findsOneWidget); // Sale price for prod 2
   });
+
+  testWidgets('displays message when no sale products found', (WidgetTester tester) async {
+    // Only regular products
+    currentMockProducts = [
+      {
+        "id": "prod-002",
+        "collectionId": "winter",
+        "name": "Regular Product",
+        "price": 30.0,
+        "onSale": false,
+        "salePrice": null,
+        "imageUrl": "https://example.com/img2.jpg",
+        "sizes": ["M"],
+        "colors": ["Blue"]
+      }
+    ];
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await waitForLoad(tester);
+
+    expect(find.text('No sale products found.'), findsOneWidget);
+    expect(find.text('Regular Product'), findsNothing);
+  });
 }
