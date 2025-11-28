@@ -12,6 +12,8 @@ import 'package:union_shop/views/sale_collection_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
 import 'package:union_shop/widgets/product_card.dart';
 import 'package:union_shop/views/auth_page.dart';
+import 'package:union_shop/views/print_shack_page.dart';
+import 'package:union_shop/views/print_shack_about_page.dart';
 
 void main() {
   runApp(
@@ -49,6 +51,8 @@ class UnionShopApp extends StatelessWidget {
         '/cart': (context) => const PageWrapper(scrollable: false, child: CartPage()),
         '/sale': (context) => const PageWrapper(child: SaleCollectionPage()),
         '/auth': (context) => const PageWrapper(child: AuthPage()),
+        '/print-shack': (context) => const PageWrapper(child: PrintShackPage()),
+        '/print-shack-about': (context) => const PageWrapper(child: PrintShackAboutPage()),
       },
     );
   }
