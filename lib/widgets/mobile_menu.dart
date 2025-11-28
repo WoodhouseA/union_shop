@@ -31,17 +31,24 @@ class MobileMenu extends StatelessWidget {
                 Navigator.pushNamed(context, '/collections');
               },
             ),
-            ListTile(
-              title: const Text('Print Shack'),
-              onTap: () {
-                Navigator.pushNamed(context, '/print-shack');
-              },
-            ),
-            ListTile(
-              title: const Text('Print Shack About'),
-              onTap: () {
-                Navigator.pushNamed(context, '/print-shack-about');
-              },
+            ExpansionTile(
+              title: const Text('The Print Shack'),
+              children: [
+                ListTile(
+                  title: const Text('Personalization'),
+                  contentPadding: const EdgeInsets.only(left: 32),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/print-shack');
+                  },
+                ),
+                ListTile(
+                  title: const Text('About'),
+                  contentPadding: const EdgeInsets.only(left: 32),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/print-shack-about');
+                  },
+                ),
+              ],
             ),
             ListTile(
               title: const Text('Sale!'),
