@@ -54,4 +54,16 @@ void main() {
     expect(find.text('The Print Shack'), findsOneWidget);
     expect(find.text('Sale!'), findsOneWidget);
   });
+
+  testWidgets('The Print Shack expands to show sub-items',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget());
+
+    // Tap to expand
+    await tester.tap(find.text('The Print Shack'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Personalization'), findsOneWidget);
+    expect(find.text('About'), findsOneWidget);
+  });
 }
