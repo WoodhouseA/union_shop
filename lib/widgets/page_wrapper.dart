@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/widgets/app_bar.dart';
 import 'package:union_shop/widgets/mobile_menu.dart';
+import 'package:union_shop/widgets/footer.dart';
 
 class PageWrapper extends StatefulWidget {
   final Widget child;
@@ -30,9 +31,19 @@ class _PageWrapperState extends State<PageWrapper> {
         children: [
           widget.scrollable
               ? SingleChildScrollView(
-                  child: widget.child,
+                  child: Column(
+                    children: [
+                      widget.child,
+                      const Footer(),
+                    ],
+                  ),
                 )
-              : widget.child,
+              : Column(
+                  children: [
+                    Expanded(child: widget.child),
+                    const Footer(),
+                  ],
+                ),
           if (_isMenuOpen) const MobileMenu(),
         ],
       ),
