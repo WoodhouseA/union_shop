@@ -8,7 +8,12 @@ class CartService with ChangeNotifier {
   List<CartItem> get items => _items;
 
   double get totalPrice {
-    return _items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
+    return _items.fold(0.0, (sum, item) {
+      final price = (item.product.onSale && item.product.salePrice != null)
+          ? item.product.salePrice!
+          : item.product.price;
+      return sum + (price * item.quantity);
+    });
   }
 
   int get totalItems {
