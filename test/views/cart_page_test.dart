@@ -123,5 +123,49 @@ void main() {
     expect(find.text('Color: Red'), findsOneWidget);
   });
 
+  testWidgets('CartPage updates quantity and removes item',
+      (WidgetTester tester) async {
+    final cartService = CartService();
+    final product = Product(
+      id: '1',
+      collectionId: 'col1',
+      name: 'Test Product',
+      price: 20.0,
+      onSale: false,
+      imageUrl: 'https://example.com/image.jpg',
+      sizes: ['M'],
+      colors: ['Red'],
+    );
 
+    cartService.addToCart(product, size: 'M', color: 'Red');
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<CartService>.value(
+        value: cartService,
+        child: const MaterialApp(
+          home: Scaffold(body: CartPage()),
+        ),
+      ),
+    );
+
+    // Increment
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(cartService.items.first.quantity, 2);
+    expect(find.text('2'), findsOneWidget);
+    expect(find.text('Total: £40.00'), findsOneWidget);
+
+    // Decrement
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+    expect(cartService.items.first.quantity, 1);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Total: £20.00'), findsOneWidget);
+
+    // Delete
+    await tester.tap(find.byIcon(Icons.delete));
+    await tester.pump();
+    expect(cartService.items.isEmpty, true);
+    expect(find.text('Your cart is empty.'), findsOneWidget);
+  });
 }
