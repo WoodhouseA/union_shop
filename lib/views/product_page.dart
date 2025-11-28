@@ -109,14 +109,37 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        '£${product.price.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4d2963),
+                      if (product.onSale && product.salePrice != null)
+                        Row(
+                          children: [
+                            Text(
+                              '£${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              '£${product.salePrice!.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        Text(
+                          '£${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4d2963),
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 24),
                       const Text(
                         'Description',
