@@ -81,7 +81,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ),
                           AppBarButton(
                             icon: Icons.person_outline,
-                            onPressed: placeholderCallbackForButtons,
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/auth');
+                            },
                           ),
                           Stack(
                             alignment: Alignment.center,
