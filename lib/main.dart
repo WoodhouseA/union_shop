@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:union_shop/models/product_model.dart';
+import 'package:union_shop/router.dart';
 import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/product_service.dart';
-import 'package:union_shop/views/cart_page.dart';
-import 'package:union_shop/views/product_page.dart';
-import 'package:union_shop/views/about_us_page.dart';
-import 'package:union_shop/views/collections_page.dart';
-import 'package:union_shop/views/sale_collection_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
 import 'package:union_shop/widgets/product_card.dart';
-import 'package:union_shop/views/auth_page.dart';
-import 'package:union_shop/views/print_shack_page.dart';
-import 'package:union_shop/views/print_shack_about_page.dart';
 
 void main() {
   runApp(
@@ -28,31 +22,13 @@ class UnionShopApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Union Shop',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
       ),
-      home: const PageWrapper(child: HomeScreen()),
-      // By default, the app starts at the '/' route, which is the HomeScreen
-      initialRoute: '/',
-      // When navigating to '/product', build and return the ProductPage
-      // In your browser, try this link: http://localhost:49856/#/product
-      routes: {
-        '/product': (context) => const PageWrapper(
-            child: ProductPage(
-              productId: 'prod-001',
-            )),
-        '/about': (context) => const PageWrapper(child: AboutUsPage()),
-        '/collections': (context) =>
-            const PageWrapper(child: CollectionsPage()),
-        '/cart': (context) => const PageWrapper(scrollable: false, child: CartPage()),
-        '/sale': (context) => const PageWrapper(child: SaleCollectionPage()),
-        '/auth': (context) => const PageWrapper(child: AuthPage()),
-        '/print-shack': (context) => const PageWrapper(child: PrintShackPage()),
-        '/print-shack-about': (context) => const PageWrapper(child: PrintShackAboutPage()),
-      },
+      routerConfig: router,
     );
   }
 }
@@ -194,13 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           final product = products[index];
                           return InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PageWrapper(
-                                      child: ProductPage(productId: product.id)),
-                                ),
-                              );
+                              context.go('/product/${product.id}');
                             },
                             child: ProductCard(product: product),
                           );
