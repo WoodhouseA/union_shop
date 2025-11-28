@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/cart_service.dart';
+import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/views/cart_page.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/about_us_page.dart';
@@ -8,6 +10,7 @@ import 'package:union_shop/widgets/footer.dart';
 import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/sale_collection_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
+import 'package:union_shop/widgets/product_card.dart';
 
 void main() {
   runApp(
@@ -49,8 +52,22 @@ class UnionShopApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ProductService _productService = ProductService();
+  late Future<List<Product>> _productsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _productsFuture = _productService.getAllProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,39 +162,47 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 48),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount:
-                      MediaQuery.of(context).size.width > 600 ? 2 : 1,
-                  crossAxisSpacing: 24,
-                  mainAxisSpacing: 48,
-                  children: const [
-                    ProductCard(
-                      title: 'Placeholder Product 1',
-                      price: '£10.00',
-                      imageUrl:
-                          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                    ),
-                    ProductCard(
-                      title: 'Placeholder Product 2',
-                      price: '£15.00',
-                      imageUrl:
-                          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                    ),
-                    ProductCard(
-                      title: 'Placeholder Product 3',
-                      price: '£20.00',
-                      imageUrl:
-                          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                    ),
-                    ProductCard(
-                      title: 'Placeholder Product 4',
-                      price: '£25.00',
-                      imageUrl:
-                          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                    ),
-                  ],
+                FutureBuilder<List<Product>>(
+                  future: _productsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No products found.'));
+                    } else {
+                      // Display first 4 products
+                      final products = snapshot.data!.take(4).toList();
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:
+                              MediaQuery.of(context).size.width > 600 ? 2 : 1,
+                          crossAxisSpacing: 24,
+                          mainAxisSpacing: 48,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PageWrapper(
+                                      child: ProductPage(productId: product.id)),
+                                ),
+                              );
+                            },
+                            child: ProductCard(product: product),
+                          );
+                        },
+                      );
+                    }
+                  },
                 ),
               ],
             ),
@@ -187,63 +212,6 @@ class HomeScreen extends StatelessWidget {
         // Footer
         const Footer(),
       ],
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  final String title;
-  final String price;
-  final String imageUrl;
-
-  const ProductCard({
-    super.key,
-    required this.title,
-    required this.price,
-    required this.imageUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, '/product');
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Center(
-                    child: Icon(Icons.image_not_supported, color: Colors.grey),
-                  ),
-                );
-              },
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 14, color: Colors.black),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                price,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
