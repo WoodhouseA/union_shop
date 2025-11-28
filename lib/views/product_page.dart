@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:union_shop/models/product_model.dart';
+import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/widgets/footer.dart';
 
@@ -15,6 +17,7 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   final ProductService _productService = ProductService();
   late Future<Product> _productFuture;
+  int _quantity = 1;
 
   @override
   void initState() {
@@ -117,6 +120,67 @@ class _ProductPageState extends State<ProductPage> {
                           color: Colors.grey,
                           height: 1.5,
                         ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          const Text(
+                            'Quantity',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.remove),
+                            onPressed: () {
+                              if (_quantity > 1) {
+                                setState(() {
+                                  _quantity--;
+                                });
+                              }
+                            },
+                          ),
+                          Text(
+                            _quantity.toString(),
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              setState(() {
+                                _quantity++;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton(
+                        onPressed: () {
+                          final cartService = Provider.of<CartService>(context, listen: false);
+                          final product = snapshot.data!;
+                          for (int i = 0; i < _quantity; i++) {
+                            cartService.addToCart(product);
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Added $_quantity ${product.name}(s) to cart'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4d2963),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                        ),
+                        child: const Text('ADD TO CART'),
                       ),
                     ],
                   ),
