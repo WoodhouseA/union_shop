@@ -5,7 +5,6 @@ import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/router.dart';
 import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/product_service.dart';
-import 'package:union_shop/widgets/page_wrapper.dart';
 import 'package:union_shop/widgets/product_card.dart';
 
 void main() {
