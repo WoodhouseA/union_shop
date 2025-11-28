@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/product_service.dart';
-import 'package:union_shop/widgets/page_wrapper.dart';
 import 'package:union_shop/widgets/product_card.dart';
 
 class SaleCollectionPage extends StatefulWidget {
