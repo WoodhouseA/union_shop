@@ -23,4 +23,15 @@ void main() {
     expect(find.byType(ElevatedButton), findsOneWidget);
     expect(find.text('Already have an account? Login'), findsOneWidget);
   });
+
+  testWidgets('SignupForm validates empty fields', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget());
+
+    // Tap sign up without entering data
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    expect(find.text('Please enter your email'), findsOneWidget);
+    expect(find.text('Please enter your password'), findsOneWidget);
+  });
 }
