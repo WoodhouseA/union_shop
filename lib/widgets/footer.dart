@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -128,15 +127,15 @@ class Footer extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.facebook),
+          icon: const Icon(Icons.facebook),
           onPressed: () {},
         ),
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.twitter),
+          icon: const Icon(Icons.alternate_email), // Placeholder for Twitter
           onPressed: () {},
         ),
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.instagram),
+          icon: const Icon(Icons.camera_alt), // Placeholder for Instagram
           onPressed: () {},
         ),
       ],

@@ -38,7 +38,7 @@ This checklist breaks down the development of the Union Shop Flutter application
 -   [ ] **Use a `Container` with a distinct background color.**
 -   [ ] **Use a `Row` or `Column` to layout dummy links and information.**
     *   **Links:** Use `TextButton` or `InkWell` with `Text` widgets for links like "Contact Us", "FAQ", "Terms of Service". The `onPressed` callbacks can be empty for now.
-    *   **Social Media Icons:** Use an icon library like `font_awesome_flutter` and display icons in a `Row`.
+    *   **Social Media Icons:** Use standard Flutter icons or assets and display icons in a `Row`.
 -   [ ] **Add the `Footer` widget to the `bottomNavigationBar` or at the bottom of the main content `Column`/`ListView` in at least one page (e.g., `HomePage`).**
 
 ### 4. Dummy Collections Page (5%)
