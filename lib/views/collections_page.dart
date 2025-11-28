@@ -49,20 +49,31 @@ class _CollectionsPageState extends State<CollectionsPage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 0.8,
-                ),
-                itemCount: collections.length,
-                itemBuilder: (context, index) {
-                  final collection = collections[index];
-                  return _CollectionCard(collection: collection);
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  int crossAxisCount = 2;
+                  if (constraints.maxWidth > 1200) {
+                    crossAxisCount = 4;
+                  } else if (constraints.maxWidth > 800) {
+                    crossAxisCount = 3;
+                  }
+
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16.0),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemCount: collections.length,
+                    itemBuilder: (context, index) {
+                      final collection = collections[index];
+                      return _CollectionCard(collection: collection);
+                    },
+                  );
                 },
               ),
             ],
@@ -100,7 +111,7 @@ class _CollectionCardState extends State<_CollectionCard> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           transform: _isHovered
-              ? (Matrix4.identity()..scale(1.05))
+              ? (Matrix4.identity()..scale(1.05, 1.05))
               : Matrix4.identity(),
           transformAlignment: Alignment.center,
           child: Card(
@@ -124,7 +135,7 @@ class _CollectionCardState extends State<_CollectionCard> {
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                      colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
