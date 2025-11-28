@@ -24,7 +24,8 @@ class CartService with ChangeNotifier {
       {String? size,
       String? color,
       String? customText,
-      String? customColorName}) {
+      String? customColorName,
+      int quantity = 1}) {
     // If the product has sizes but no size is selected, do not add to cart.
     if (product.sizes.isNotEmpty && size == null) {
       return;
@@ -42,10 +43,11 @@ class CartService with ChangeNotifier {
         item.customColorName == customColorName);
 
     if (existingIndex != -1) {
-      _items[existingIndex].quantity++;
+      _items[existingIndex].quantity += quantity;
     } else {
       _items.add(CartItem(
         product: product,
+        quantity: quantity,
         size: size,
         color: color,
         customText: customText,
