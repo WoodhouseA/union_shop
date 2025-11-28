@@ -38,3 +38,39 @@ class MockCartService extends ChangeNotifier implements CartService {
       {String? customText, String? customColorName}) {}
 }
 
+void main() {
+  late MockCartService mockCartService;
+
+  setUp(() {
+    mockCartService = MockCartService();
+  });
+
+  Widget createTestWidget({required Widget child, bool scrollable = true}) {
+    return ChangeNotifierProvider<CartService>.value(
+      value: mockCartService,
+      child: MaterialApp(
+        home: PageWrapper(
+          scrollable: scrollable,
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  testWidgets('PageWrapper displays child content', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: const Text('Test Content'),
+    ));
+
+    expect(find.text('Test Content'), findsOneWidget);
+  });
+
+  testWidgets('PageWrapper displays AppBar and Footer', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: const Text('Test Content'),
+    ));
+
+    expect(find.byType(CustomAppBar), findsOneWidget);
+    expect(find.byType(Footer), findsOneWidget);
+  });
+}
