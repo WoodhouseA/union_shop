@@ -47,94 +47,109 @@ class _CustomAppBarState extends State<CustomAppBar> {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        navigateToHome(context);
-                      },
-                      child: Image.network(
-                        'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
-                        height: 18,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            width: 18,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isDesktop = constraints.maxWidth > 900;
+                    return Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            navigateToHome(context);
+                          },
+                          child: Image.network(
+                            'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
                             height: 18,
-                            child: const Center(
-                              child: Icon(Icons.image_not_supported,
-                                  color: Colors.grey),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const Spacer(),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 600),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AppBarButton(
-                            icon: Icons.search,
-                            onPressed: placeholderCallbackForButtons,
-                          ),
-                          AppBarButton(
-                            icon: Icons.person_outline,
-                            onPressed: () {
-                              context.go('/auth');
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[300],
+                                width: 18,
+                                height: 18,
+                                child: const Center(
+                                  child: Icon(Icons.image_not_supported,
+                                      color: Colors.grey),
+                                ),
+                              );
                             },
                           ),
-                          Stack(
-                            alignment: Alignment.center,
+                        ),
+                        if (isDesktop) ...[
+                          const SizedBox(width: 32),
+                          const _NavBarItem(title: 'Home', path: '/'),
+                          const _NavBarItem(title: 'About Us', path: '/about'),
+                          const _NavBarItem(
+                              title: 'Collections', path: '/collections'),
+                          const _PrintShackMenu(),
+                          const _NavBarItem(title: 'Sale!', path: '/sale'),
+                        ],
+                        const Spacer(),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               AppBarButton(
-                                icon: Icons.shopping_bag_outlined,
+                                icon: Icons.search,
+                                onPressed: placeholderCallbackForButtons,
+                              ),
+                              AppBarButton(
+                                icon: Icons.person_outline,
                                 onPressed: () {
-                                  context.go('/cart');
+                                  context.go('/auth');
                                 },
                               ),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: Consumer<CartService>(
-                                  builder: (context, cart, child) {
-                                    return cart.items.isEmpty
-                                        ? const SizedBox.shrink()
-                                        : Container(
-                                            padding: const EdgeInsets.all(2),
-                                            decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 16,
-                                              minHeight: 16,
-                                            ),
-                                            child: Text(
-                                              cart.totalItems.toString(),
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          );
-                                  },
-                                ),
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AppBarButton(
+                                    icon: Icons.shopping_bag_outlined,
+                                    onPressed: () {
+                                      context.go('/cart');
+                                    },
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: Consumer<CartService>(
+                                      builder: (context, cart, child) {
+                                        return cart.items.isEmpty
+                                            ? const SizedBox.shrink()
+                                            : Container(
+                                                padding: const EdgeInsets.all(2),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                constraints: const BoxConstraints(
+                                                  minWidth: 16,
+                                                  minHeight: 16,
+                                                ),
+                                                child: Text(
+                                                  cart.totalItems.toString(),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
+                              if (!isDesktop)
+                                AppBarButton(
+                                  icon: Icons.menu,
+                                  onPressed: widget.onMenuPressed,
+                                ),
                             ],
                           ),
-                          AppBarButton(
-                            icon: Icons.menu,
-                            onPressed: widget.onMenuPressed,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -169,6 +184,74 @@ class AppBarButton extends StatelessWidget {
         minHeight: 32,
       ),
       onPressed: onPressed,
+    );
+  }
+}
+
+class _NavBarItem extends StatelessWidget {
+  final String title;
+  final String path;
+
+  const _NavBarItem({required this.title, required this.path});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: TextButton(
+        onPressed: () => context.go(path),
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PrintShackMenu extends StatelessWidget {
+  const _PrintShackMenu();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: PopupMenuButton<String>(
+        offset: const Offset(0, 40),
+        tooltip: 'The Print Shack',
+        onSelected: (value) => context.go(value),
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: '/print-shack',
+            child: Text('Personalization'),
+          ),
+          const PopupMenuItem(
+            value: '/print-shack-about',
+            child: Text('About'),
+          ),
+        ],
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'The Print Shack',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              Icon(Icons.arrow_drop_down, color: Colors.black, size: 20),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
