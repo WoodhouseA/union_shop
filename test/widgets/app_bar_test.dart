@@ -120,4 +120,21 @@ void main() {
     // Reset screen size
     addTearDown(tester.view.resetPhysicalSize);
   });
+
+  testWidgets('Menu button callback is triggered', (WidgetTester tester) async {
+    bool menuPressed = false;
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {
+        menuPressed = true;
+      }),
+    ));
+
+    await tester.tap(find.byIcon(Icons.menu));
+    expect(menuPressed, isTrue);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
 }
