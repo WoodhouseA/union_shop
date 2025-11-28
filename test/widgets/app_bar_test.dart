@@ -35,3 +35,42 @@ class MockCartService extends ChangeNotifier implements CartService {
       {String? customText, String? customColorName}) {}
 }
 
+void main() {
+  late MockCartService mockCartService;
+
+  setUp(() {
+    mockCartService = MockCartService();
+  });
+
+  Widget createTestWidget({required Widget child}) {
+    return ChangeNotifierProvider<CartService>.value(
+      value: mockCartService,
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: child as PreferredSizeWidget,
+        ),
+      ),
+    );
+  }
+
+  testWidgets('CustomAppBar displays title and logo', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.text('UNIVERSITY OF PORTSMOUTH SHOP'), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
+  });
+
+  testWidgets('CustomAppBar displays action buttons', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.byIcon(Icons.search), findsOneWidget);
+    expect(find.byIcon(Icons.person_outline), findsOneWidget);
+    expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
+  });
+
+
+}
