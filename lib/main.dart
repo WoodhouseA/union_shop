@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      'Placeholder Hero Title',
+                      'CHECK OUT THE SALE!',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      "This is placeholder text for the hero section.",
+                      "Don't miss out on our exclusive sale items!",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -106,7 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.go('/sale');
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
                         foregroundColor: Colors.white,
@@ -115,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: const Text(
-                        'BROWSE PRODUCTS',
+                        'CHECK OUT THE SALE!',
                         style: TextStyle(fontSize: 14, letterSpacing: 1),
                       ),
                     ),
