@@ -91,4 +91,15 @@ void main() {
 
     expect(find.textContaining('Error'), findsOneWidget);
   });
+
+  testWidgets('navigates to collection details on tap', (WidgetTester tester) async {
+    final mockService = MockCollectionService(mockCollections: testCollections);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Collection 1'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Collection col1'), findsOneWidget);
+  });
 }
