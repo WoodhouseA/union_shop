@@ -43,7 +43,7 @@ class CartPage extends StatelessWidget {
                             icon: const Icon(Icons.remove),
                             onPressed: () {
                               cartService.updateQuantity(
-                                  item.product.id, item.quantity - 1);
+                                  item.product.id, item.quantity - 1, item.size);
                             },
                           ),
                           Text(item.quantity.toString()),
@@ -51,13 +51,13 @@ class CartPage extends StatelessWidget {
                             icon: const Icon(Icons.add),
                             onPressed: () {
                               cartService.updateQuantity(
-                                  item.product.id, item.quantity + 1);
+                                  item.product.id, item.quantity + 1, item.size);
                             },
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
-                              cartService.removeFromCart(item.product.id);
+                              cartService.removeFromCart(item.product.id, item.size);
                             },
                           ),
                         ],
