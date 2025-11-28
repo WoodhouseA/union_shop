@@ -114,4 +114,32 @@ void main() {
 
     expect(find.textContaining('Error'), findsOneWidget);
   });
+
+  testWidgets('sorts products by price descending', (WidgetTester tester) async {
+    final mockService = MockProductService(mockProducts: testProducts);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    // Default sort is name_asc (A, B, C)
+    // Verify order
+    final cards = find.byType(ProductCard);
+    expect(tester.widget<ProductCard>(cards.at(0)).product.name, 'Product A');
+    expect(tester.widget<ProductCard>(cards.at(1)).product.name, 'Product B');
+    expect(tester.widget<ProductCard>(cards.at(2)).product.name, 'Product C');
+
+    // Change sort to Price (High-Low)
+    // Find the dropdown
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    
+    // Tap the item
+    await tester.tap(find.text('Price (High-Low)').last);
+    await tester.pumpAndSettle();
+
+    // Verify new order: C (30), B (15), A (10)
+    final newCards = find.byType(ProductCard);
+    expect(tester.widget<ProductCard>(newCards.at(0)).product.name, 'Product C');
+    expect(tester.widget<ProductCard>(newCards.at(1)).product.name, 'Product B');
+    expect(tester.widget<ProductCard>(newCards.at(2)).product.name, 'Product A');
+  });
 }
