@@ -72,5 +72,52 @@ void main() {
     expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
   });
 
+  testWidgets('CustomAppBar displays menu button on mobile', (WidgetTester tester) async {
+    // Set screen size to mobile
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
 
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.byIcon(Icons.menu), findsOneWidget);
+
+    // Reset screen size
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('CustomAppBar hides menu button on desktop', (WidgetTester tester) async {
+    // Set screen size to desktop
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.byIcon(Icons.menu), findsNothing);
+
+    // Reset screen size
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('CustomAppBar displays nav items on desktop', (WidgetTester tester) async {
+    // Set screen size to desktop
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('About Us'), findsOneWidget);
+    expect(find.text('Collections'), findsOneWidget);
+    expect(find.text('The Print Shack'), findsOneWidget);
+    expect(find.text('Sale!'), findsOneWidget);
+
+    // Reset screen size
+    addTearDown(tester.view.resetPhysicalSize);
+  });
 }
