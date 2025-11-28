@@ -111,7 +111,7 @@ class _CollectionCardState extends State<_CollectionCard> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           transform: _isHovered
-              ? (Matrix4.identity()..scale(1.05, 1.05))
+              ? Matrix4.diagonal3Values(1.05, 1.05, 1.0)
               : Matrix4.identity(),
           transformAlignment: Alignment.center,
           child: Card(
