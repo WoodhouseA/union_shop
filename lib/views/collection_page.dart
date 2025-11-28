@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/product_service.dart';
-import 'package:union_shop/views/product_page.dart';
-import 'package:union_shop/widgets/page_wrapper.dart';
 import 'package:union_shop/widgets/product_card.dart';
 
 class CollectionPage extends StatefulWidget {
@@ -173,10 +172,10 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const PageWrapper(child: Center(child: CircularProgressIndicator()));
+      return const Center(child: CircularProgressIndicator());
     }
     if (_errorMessage != null) {
-      return PageWrapper(child: Center(child: Text('Error: $_errorMessage')));
+      return Center(child: Text('Error: $_errorMessage'));
     }
 
     // Pagination Logic
@@ -188,112 +187,104 @@ class _CollectionPageState extends State<CollectionPage> {
     
     final List<Product> currentProducts = _displayedProducts.sublist(startIndex, endIndex);
 
-    return PageWrapper(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.collectionName,
+                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  // Sort Dropdown
+                  DropdownButton<String>(
+                    value: _sortOption,
+                    items: const [
+                      DropdownMenuItem(value: 'name_asc', child: Text('Name (A-Z)')),
+                      DropdownMenuItem(value: 'name_desc', child: Text('Name (Z-A)')),
+                      DropdownMenuItem(value: 'price_asc', child: Text('Price (Low-High)')),
+                      DropdownMenuItem(value: 'price_desc', child: Text('Price (High-Low)')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _sortOption = value;
+                          _applyFiltersAndSort();
+                        });
+                      }
+                    },
+                  ),
+                  const Spacer(),
+                  // Filter Button
+                  OutlinedButton.icon(
+                    onPressed: _showFilterDialog,
+                    icon: const Icon(Icons.filter_list),
+                    label: const Text('Filter'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        
+        if (_displayedProducts.isEmpty)
+          const Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Center(child: Text('No products match your filters.')),
+          )
+        else
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: currentProducts.length,
+            itemBuilder: (context, index) {
+              final product = currentProducts[index];
+              return InkWell(
+                onTap: () {
+                  context.go('/product/${product.id}');
+                },
+                child: ProductCard(product: product),
+              );
+            },
+          ),
+
+        // Pagination Controls
+        if (totalPages > 1)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  widget.collectionName,
-                  style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                IconButton(
+                  icon: const Icon(Icons.chevron_left),
+                  onPressed: _currentPage > 1 
+                      ? () => setState(() => _currentPage--) 
+                      : null,
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    // Sort Dropdown
-                    DropdownButton<String>(
-                      value: _sortOption,
-                      items: const [
-                        DropdownMenuItem(value: 'name_asc', child: Text('Name (A-Z)')),
-                        DropdownMenuItem(value: 'name_desc', child: Text('Name (Z-A)')),
-                        DropdownMenuItem(value: 'price_asc', child: Text('Price (Low-High)')),
-                        DropdownMenuItem(value: 'price_desc', child: Text('Price (High-Low)')),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _sortOption = value;
-                            _applyFiltersAndSort();
-                          });
-                        }
-                      },
-                    ),
-                    const Spacer(),
-                    // Filter Button
-                    OutlinedButton.icon(
-                      onPressed: _showFilterDialog,
-                      icon: const Icon(Icons.filter_list),
-                      label: const Text('Filter'),
-                    ),
-                  ],
+                Text('Page $_currentPage of $totalPages'),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: _currentPage < totalPages 
+                      ? () => setState(() => _currentPage++) 
+                      : null,
                 ),
               ],
             ),
           ),
-          
-          if (_displayedProducts.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: Center(child: Text('No products match your filters.')),
-            )
-          else
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: currentProducts.length,
-              itemBuilder: (context, index) {
-                final product = currentProducts[index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PageWrapper(child: ProductPage(productId: product.id)),
-                      ),
-                    );
-                  },
-                  child: ProductCard(product: product),
-                );
-              },
-            ),
-
-          // Pagination Controls
-          if (totalPages > 1)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    onPressed: _currentPage > 1 
-                        ? () => setState(() => _currentPage--) 
-                        : null,
-                  ),
-                  Text('Page $_currentPage of $totalPages'),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right),
-                    onPressed: _currentPage < totalPages 
-                        ? () => setState(() => _currentPage++) 
-                        : null,
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
+      ],
     );
   }
 }
