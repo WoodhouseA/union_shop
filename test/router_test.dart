@@ -89,7 +89,7 @@ class MockHttpClientResponse extends Fake implements HttpClientResponse {
       // Just closing the stream empty or throwing error.
       // Image.network handles 404 by throwing exception internally which triggers errorBuilder.
       // We can just close the stream.
-      return Stream<List<int>>.empty().listen(onData,
+      return const Stream<List<int>>.empty().listen(onData,
           onError: onError, onDone: onDone, cancelOnError: cancelOnError);
     }
   }
