@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:union_shop/main.dart';
 import 'package:union_shop/models/cart_model.dart';
@@ -16,6 +17,11 @@ import 'package:union_shop/views/about_us_page.dart';
 import 'package:union_shop/views/cart_page.dart';
 import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/sale_collection_page.dart';
+import 'package:union_shop/views/auth_page.dart';
+import 'package:union_shop/views/collection_page.dart';
+import 'package:union_shop/views/print_shack_about_page.dart';
+import 'package:union_shop/views/print_shack_page.dart';
+import 'package:union_shop/views/product_page.dart';
 
 // --- Mock HttpOverrides for NetworkImage ---
 
@@ -32,17 +38,24 @@ class MockHttpClient extends Fake implements HttpClient {
 
   @override
   Future<HttpClientRequest> getUrl(Uri url) async {
-    return MockHttpClientRequest();
+    // Fail images to avoid hanging
+    if (url.toString().endsWith('.png')) {
+      return MockHttpClientRequest(statusCode: 404);
+    }
+    return MockHttpClientRequest(statusCode: 200);
   }
 }
 
 class MockHttpClientRequest extends Fake implements HttpClientRequest {
+  final int statusCode;
+  MockHttpClientRequest({required this.statusCode});
+
   @override
   HttpHeaders get headers => MockHttpHeaders();
 
   @override
   Future<HttpClientResponse> close() async {
-    return MockHttpClientResponse();
+    return MockHttpClientResponse(statusCode: statusCode);
   }
 }
 
@@ -52,8 +65,11 @@ class MockHttpHeaders extends Fake implements HttpHeaders {
 }
 
 class MockHttpClientResponse extends Fake implements HttpClientResponse {
+  final int _statusCode;
+  MockHttpClientResponse({required int statusCode}) : _statusCode = statusCode;
+
   @override
-  int get statusCode => 200;
+  int get statusCode => _statusCode;
 
   @override
   int get contentLength => kTransparentImage.length;
@@ -65,8 +81,17 @@ class MockHttpClientResponse extends Fake implements HttpClientResponse {
   @override
   StreamSubscription<List<int>> listen(void Function(List<int> event)? onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
-    return Stream<List<int>>.fromIterable([kTransparentImage]).listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    if (_statusCode == 200) {
+      return Stream<List<int>>.fromIterable([kTransparentImage]).listen(onData,
+          onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    } else {
+      // For 404, we might not send body, or send error.
+      // Just closing the stream empty or throwing error.
+      // Image.network handles 404 by throwing exception internally which triggers errorBuilder.
+      // We can just close the stream.
+      return Stream<List<int>>.empty().listen(onData,
+          onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    }
   }
 }
 
@@ -112,15 +137,53 @@ class MockCartService extends ChangeNotifier implements CartService {
 
 void main() {
   late MockCartService mockCartService;
+  late GoRouter testRouter;
+
+  // Sample product data for mocking assets/products.json
+  final List<Map<String, dynamic>> mockProducts = [
+    {
+      "id": "test-product-1",
+      "collectionId": "test-collection",
+      "name": "Test Product 1",
+      "price": 20.0,
+      "onSale": false,
+      "imageUrl": "http://test.com/image1.png",
+      "sizes": ["S", "M", "L"],
+      "colors": ["Red", "Blue"]
+    }
+  ];
+
+  // Sample collection data for mocking assets/collections.json
+  final List<Map<String, dynamic>> mockCollections = [
+    {
+      "id": "test-collection",
+      "name": "TestCollection",
+      "image": "http://test.com/collection.png"
+    }
+  ];
 
   setUp(() {
     mockCartService = MockCartService();
     HttpOverrides.global = TestHttpOverrides();
+    
+    testRouter = GoRouter(
+      routes: router.configuration.routes,
+      initialLocation: '/',
+    );
 
     // Mock asset loading
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', (ByteData? message) async {
-      return ByteData.view(Uint8List.fromList(utf8.encode('[]')).buffer);
+      if (message == null) return null;
+      final String key = utf8.decode(message.buffer.asUint8List());
+      
+      if (key.contains('collections.json')) {
+         return ByteData.view(
+          Uint8List.fromList(utf8.encode(json.encode(mockCollections))).buffer);
+      }
+
+      return ByteData.view(
+          Uint8List.fromList(utf8.encode(json.encode(mockProducts))).buffer);
     });
   });
 
@@ -134,62 +197,44 @@ void main() {
     return ChangeNotifierProvider<CartService>.value(
       value: mockCartService,
       child: MaterialApp.router(
-        routerConfig: router,
+        routerConfig: testRouter,
       ),
     );
   }
 
   testWidgets('Router starts at Home', (WidgetTester tester) async {
-    // Ensure we start at root
-    router.go('/');
-    
+    testRouter.go('/');
     await tester.pumpWidget(createTestApp());
     await tester.pump(const Duration(seconds: 2));
-
     expect(find.byType(HomeScreen), findsOneWidget);
   });
 
   testWidgets('Router navigates to About Us', (WidgetTester tester) async {
     await tester.pumpWidget(createTestApp());
-    await tester.pump(const Duration(seconds: 1));
-
-    router.go('/about');
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pump(const Duration(seconds: 1));
-
+    testRouter.go('/about');
+    await tester.pumpAndSettle();
     expect(find.byType(AboutUsPage), findsOneWidget);
   });
 
   testWidgets('Router navigates to Collections', (WidgetTester tester) async {
     await tester.pumpWidget(createTestApp());
-    await tester.pump(const Duration(seconds: 1));
-
-    router.go('/collections');
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pump(const Duration(seconds: 1));
-
+    testRouter.go('/collections');
+    await tester.pumpAndSettle();
     expect(find.byType(CollectionsPage), findsOneWidget);
   });
 
   testWidgets('Router navigates to Sale', (WidgetTester tester) async {
     await tester.pumpWidget(createTestApp());
+    testRouter.go('/sale');
+    await tester.pump();
     await tester.pump(const Duration(seconds: 1));
-
-    router.go('/sale');
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pump(const Duration(seconds: 1));
-
     expect(find.byType(SaleCollectionPage), findsOneWidget);
   });
-  
+
   testWidgets('Router navigates to Cart', (WidgetTester tester) async {
     await tester.pumpWidget(createTestApp());
-    await tester.pump(const Duration(seconds: 1));
-
-    router.go('/cart');
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pump(const Duration(seconds: 1));
-
+    testRouter.go('/cart');
+    await tester.pumpAndSettle();
     expect(find.byType(CartPage), findsOneWidget);
   });
 }
