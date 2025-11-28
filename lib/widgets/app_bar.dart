@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:union_shop/services/cart_service.dart';
 
@@ -15,7 +16,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   void navigateToHome(BuildContext context) {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    context.go('/');
   }
 
   void placeholderCallbackForButtons() {
@@ -82,7 +83,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           AppBarButton(
                             icon: Icons.person_outline,
                             onPressed: () {
-                              Navigator.pushNamed(context, '/auth');
+                              context.go('/auth');
                             },
                           ),
                           Stack(
@@ -91,7 +92,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               AppBarButton(
                                 icon: Icons.shopping_bag_outlined,
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/cart');
+                                  context.go('/cart');
                                 },
                               ),
                               Positioned(
