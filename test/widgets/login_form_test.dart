@@ -23,4 +23,37 @@ void main() {
     expect(find.byType(ElevatedButton), findsOneWidget);
     expect(find.text('Don\'t have an account? Sign up'), findsOneWidget);
   });
+
+  testWidgets('LoginForm validates empty fields', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget());
+
+    // Tap login without entering data
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    expect(find.text('Please enter your email'), findsOneWidget);
+    expect(find.text('Please enter your password'), findsOneWidget);
+  });
+
+  testWidgets('LoginForm accepts valid input', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget());
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'test@example.com');
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    expect(find.text('Please enter your email'), findsNothing);
+    expect(find.text('Please enter your password'), findsNothing);
+  });
+
+  testWidgets('Toggle button triggers callback', (WidgetTester tester) async {
+    bool toggled = false;
+    await tester.pumpWidget(createTestWidget(onToggle: () {
+      toggled = true;
+    }));
+
+    await tester.tap(find.text('Don\'t have an account? Sign up'));
+    expect(toggled, isTrue);
+  });
 }
