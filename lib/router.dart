@@ -59,7 +59,7 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'cart',
           builder: (BuildContext context, GoRouterState state) {
-            return const PageWrapper(scrollable: false, child: CartPage());
+            return const PageWrapper(child: CartPage());
           },
         ),
         GoRoute(
