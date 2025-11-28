@@ -39,21 +39,33 @@ class _CollectionsPageState extends State<CollectionsPage> {
           return const Center(child: Text('No collections found.'));
         } else {
           final collections = snapshot.data!;
-          return GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16.0),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: collections.length,
-            itemBuilder: (context, index) {
-              final collection = collections[index];
-              return _CollectionCard(collection: collection);
-            },
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Text(
+                  'Collections',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: collections.length,
+                itemBuilder: (context, index) {
+                  final collection = collections[index];
+                  return _CollectionCard(collection: collection);
+                },
+              ),
+            ],
           );
         }
       },
