@@ -87,4 +87,31 @@ void main() {
       routerConfig: router,
     );
   }
+
+  testWidgets('shows loading indicator initially', (WidgetTester tester) async {
+    final mockService = MockProductService(mockProducts: testProducts);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.pumpAndSettle(); // Finish loading
+  });
+
+  testWidgets('shows products after loading', (WidgetTester tester) async {
+    final mockService = MockProductService(mockProducts: testProducts);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProductCard), findsNWidgets(3));
+    expect(find.text('Product A'), findsOneWidget);
+    expect(find.text('Product B'), findsOneWidget);
+    expect(find.text('Product C'), findsOneWidget);
+  });
+
+  testWidgets('shows error message on failure', (WidgetTester tester) async {
+    final mockService = MockProductService(shouldFail: true);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Error'), findsOneWidget);
+  });
 }
