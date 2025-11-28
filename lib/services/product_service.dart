@@ -22,6 +22,10 @@ class ProductService {
     return products.where((p) => p.onSale).toList();
   }
 
+  Future<List<Product>> getAllProducts() async {
+    return await _loadProducts();
+  }
+
   Future<Product> getProductById(String productId) async {
     final List<Product> allProducts = await _loadProducts();
     return allProducts.firstWhere((product) => product.id == productId);
