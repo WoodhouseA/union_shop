@@ -56,12 +56,6 @@ class MobileMenu extends StatelessWidget {
                 context.go('/sale');
               },
             ),
-            ListTile(
-              title: const Text('Products'),
-              onTap: () {
-                context.go('/product/prod-001');
-              },
-            ),
           ],
         ),
       ),
