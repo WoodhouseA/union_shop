@@ -168,4 +168,51 @@ void main() {
     expect(cartService.items.isEmpty, true);
     expect(find.text('Your cart is empty.'), findsOneWidget);
   });
+
+  testWidgets('CartPage checkout clears cart', (WidgetTester tester) async {
+    final cartService = CartService();
+    final product = Product(
+      id: '1',
+      collectionId: 'col1',
+      name: 'Test Product',
+      price: 20.0,
+      onSale: false,
+      imageUrl: 'https://example.com/image.jpg',
+      sizes: ['M'],
+      colors: ['Red'],
+    );
+
+    cartService.addToCart(product, size: 'M', color: 'Red');
+
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: CartPage()),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<CartService>.value(
+        value: cartService,
+        child: MaterialApp.router(
+          routerConfig: router,
+        ),
+      ),
+    );
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Checkout'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Checkout'), findsNWidgets(2)); // Button and Dialog Title
+    expect(find.text('This is a simulated checkout. Your order has been placed!'),
+        findsOneWidget);
+
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    expect(cartService.items.isEmpty, true);
+    expect(find.text('Your cart is empty.'), findsOneWidget);
+  });
 }
