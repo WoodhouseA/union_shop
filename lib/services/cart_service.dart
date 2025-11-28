@@ -15,37 +15,41 @@ class CartService with ChangeNotifier {
     return _items.fold(0, (sum, item) => sum + item.quantity);
   }
 
-  void addToCart(Product product, {String? size}) {
+  void addToCart(Product product, {String? size, String? color}) {
     // If the product has sizes but no size is selected, do not add to cart.
     if (product.sizes.isNotEmpty && size == null) {
       return;
     }
+    // If the product has colors but no color is selected, do not add to cart.
+    if (product.colors.isNotEmpty && color == null) {
+      return;
+    }
 
     final existingIndex = _items.indexWhere(
-        (item) => item.product.id == product.id && item.size == size);
+        (item) => item.product.id == product.id && item.size == size && item.color == color);
         
     if (existingIndex != -1) {
       _items[existingIndex].quantity++;
     } else {
-      _items.add(CartItem(product: product, size: size));
+      _items.add(CartItem(product: product, size: size, color: color));
     }
     notifyListeners();
   }
 
-  void removeFromCart(String productId, String? size) {
+  void removeFromCart(String productId, String? size, String? color) {
     _items.removeWhere(
-        (item) => item.product.id == productId && item.size == size);
+        (item) => item.product.id == productId && item.size == size && item.color == color);
     notifyListeners();
   }
 
-  void updateQuantity(String productId, int quantity, String? size) {
+  void updateQuantity(String productId, int quantity, String? size, String? color) {
     final existingIndex = _items
-        .indexWhere((item) => item.product.id == productId && item.size == size);
+        .indexWhere((item) => item.product.id == productId && item.size == size && item.color == color);
     if (existingIndex != -1) {
       if (quantity > 0) {
         _items[existingIndex].quantity = quantity;
       } else {
-        removeFromCart(productId, size);
+        removeFromCart(productId, size, color);
       }
       notifyListeners();
     }
