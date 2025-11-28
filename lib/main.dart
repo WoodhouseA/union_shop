@@ -41,7 +41,7 @@ class UnionShopApp extends StatelessWidget {
         '/about': (context) => const PageWrapper(child: AboutUsPage()),
         '/collections': (context) =>
             const PageWrapper(child: CollectionsPage()),
-        '/cart': (context) => const PageWrapper(child: CartPage()),
+        '/cart': (context) => const PageWrapper(child: CartPage(), scrollable: false),
       },
     );
   }
