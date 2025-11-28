@@ -95,4 +95,18 @@ void main() {
     }
     throw Exception('Timed out waiting for products to load');
   }
+
+  testWidgets('displays only sale products', (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+    await waitForLoad(tester);
+
+    expect(find.text('Sale!'), findsOneWidget);
+    expect(find.text('Sale Product 1'), findsOneWidget);
+    expect(find.text('Sale Product 2'), findsOneWidget);
+    expect(find.text('Regular Product'), findsNothing);
+    
+    // Check prices
+    expect(find.text('£15.00'), findsOneWidget); // Sale price for prod 1
+    expect(find.text('£40.00'), findsOneWidget); // Sale price for prod 2
+  });
 }
