@@ -76,4 +76,24 @@ void main() {
       expect(find.byType(TextField), findsNWidgets(2));
     }
   });
+
+  testWidgets('quantity updates correctly', (WidgetTester tester) async {
+    final mockCartService = MockCartService();
+    await tester.pumpWidget(createWidgetUnderTest(mockCartService));
+
+    // Increase quantity
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(find.text('2'), findsOneWidget);
+
+    // Decrease quantity
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+    expect(find.text('1'), findsOneWidget);
+
+    // Try decreasing below 1 (should stay 1)
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+    expect(find.text('1'), findsOneWidget);
+  });
 }
