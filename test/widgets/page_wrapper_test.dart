@@ -102,4 +102,22 @@ void main() {
 
     addTearDown(tester.view.resetPhysicalSize);
   });
+
+  testWidgets('PageWrapper uses SingleChildScrollView when scrollable is true', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: const Text('Test Content'),
+      scrollable: true,
+    ));
+
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
+  });
+
+  testWidgets('PageWrapper does not use SingleChildScrollView when scrollable is false', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: const Text('Test Content'),
+      scrollable: false,
+    ));
+
+    expect(find.byType(SingleChildScrollView), findsNothing);
+  });
 }
