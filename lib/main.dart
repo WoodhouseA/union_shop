@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 const Text(
-                  'PRODUCTS SECTION',
+                  'OUR FAVOURITE PICKS!',
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.black,
