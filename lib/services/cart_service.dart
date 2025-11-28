@@ -20,7 +20,12 @@ class CartService with ChangeNotifier {
     return _items.fold(0, (sum, item) => sum + item.quantity);
   }
 
-  void addToCart(Product product, {String? size, String? color}) {
+  void addToCart(Product product,
+      {String? size,
+      String? color,
+      String? customText,
+      String? customFont,
+      String? customColorName}) {
     // If the product has sizes but no size is selected, do not add to cart.
     if (product.sizes.isNotEmpty && size == null) {
       return;
@@ -30,31 +35,58 @@ class CartService with ChangeNotifier {
       return;
     }
 
-    final existingIndex = _items.indexWhere(
-        (item) => item.product.id == product.id && item.size == size && item.color == color);
-        
+    final existingIndex = _items.indexWhere((item) =>
+        item.product.id == product.id &&
+        item.size == size &&
+        item.color == color &&
+        item.customText == customText &&
+        item.customFont == customFont &&
+        item.customColorName == customColorName);
+
     if (existingIndex != -1) {
       _items[existingIndex].quantity++;
     } else {
-      _items.add(CartItem(product: product, size: size, color: color));
+      _items.add(CartItem(
+        product: product,
+        size: size,
+        color: color,
+        customText: customText,
+        customFont: customFont,
+        customColorName: customColorName,
+      ));
     }
     notifyListeners();
   }
 
-  void removeFromCart(String productId, String? size, String? color) {
-    _items.removeWhere(
-        (item) => item.product.id == productId && item.size == size && item.color == color);
+  void removeFromCart(String productId, String? size, String? color,
+      {String? customText, String? customFont, String? customColorName}) {
+    _items.removeWhere((item) =>
+        item.product.id == productId &&
+        item.size == size &&
+        item.color == color &&
+        item.customText == customText &&
+        item.customFont == customFont &&
+        item.customColorName == customColorName);
     notifyListeners();
   }
 
-  void updateQuantity(String productId, int quantity, String? size, String? color) {
-    final existingIndex = _items
-        .indexWhere((item) => item.product.id == productId && item.size == size && item.color == color);
+  void updateQuantity(String productId, int quantity, String? size, String? color,
+      {String? customText, String? customFont, String? customColorName}) {
+    final existingIndex = _items.indexWhere((item) =>
+        item.product.id == productId &&
+        item.size == size &&
+        item.color == color &&
+        item.customText == customText &&
+        item.customFont == customFont &&
+        item.customColorName == customColorName);
     if (existingIndex != -1) {
       if (quantity > 0) {
         _items[existingIndex].quantity = quantity;
       } else {
-        removeFromCart(productId, size, color);
+        removeFromCart(productId, size, color,
+            customText: customText,
+            customFont: customFont,
+            customColorName: customColorName);
       }
       notifyListeners();
     }
