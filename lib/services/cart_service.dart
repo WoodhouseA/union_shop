@@ -24,7 +24,6 @@ class CartService with ChangeNotifier {
       {String? size,
       String? color,
       String? customText,
-      String? customFont,
       String? customColorName}) {
     // If the product has sizes but no size is selected, do not add to cart.
     if (product.sizes.isNotEmpty && size == null) {
@@ -40,7 +39,6 @@ class CartService with ChangeNotifier {
         item.size == size &&
         item.color == color &&
         item.customText == customText &&
-        item.customFont == customFont &&
         item.customColorName == customColorName);
 
     if (existingIndex != -1) {
@@ -51,7 +49,6 @@ class CartService with ChangeNotifier {
         size: size,
         color: color,
         customText: customText,
-        customFont: customFont,
         customColorName: customColorName,
       ));
     }
@@ -59,25 +56,23 @@ class CartService with ChangeNotifier {
   }
 
   void removeFromCart(String productId, String? size, String? color,
-      {String? customText, String? customFont, String? customColorName}) {
+      {String? customText, String? customColorName}) {
     _items.removeWhere((item) =>
         item.product.id == productId &&
         item.size == size &&
         item.color == color &&
         item.customText == customText &&
-        item.customFont == customFont &&
         item.customColorName == customColorName);
     notifyListeners();
   }
 
   void updateQuantity(String productId, int quantity, String? size, String? color,
-      {String? customText, String? customFont, String? customColorName}) {
+      {String? customText, String? customColorName}) {
     final existingIndex = _items.indexWhere((item) =>
         item.product.id == productId &&
         item.size == size &&
         item.color == color &&
         item.customText == customText &&
-        item.customFont == customFont &&
         item.customColorName == customColorName);
     if (existingIndex != -1) {
       if (quantity > 0) {
@@ -85,7 +80,6 @@ class CartService with ChangeNotifier {
       } else {
         removeFromCart(productId, size, color,
             customText: customText,
-            customFont: customFont,
             customColorName: customColorName);
       }
       notifyListeners();

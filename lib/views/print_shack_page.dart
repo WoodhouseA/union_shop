@@ -12,10 +12,8 @@ class PrintShackPage extends StatefulWidget {
 
 class _PrintShackPageState extends State<PrintShackPage> {
   String _customText = '';
-  String _selectedFont = 'Roboto';
   Color _selectedColor = Colors.black;
 
-  final List<String> _fonts = ['Roboto', 'Arial', 'Times New Roman', 'Courier'];
   final Map<String, Color> _colors = {
     'Black': Colors.black,
     'Red': Colors.red,
@@ -55,7 +53,6 @@ class _PrintShackPageState extends State<PrintShackPage> {
             child: Text(
               _customText.isEmpty ? 'Your Text Here' : _customText,
               style: TextStyle(
-                fontFamily: _selectedFont,
                 color: _selectedColor,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -83,29 +80,6 @@ class _PrintShackPageState extends State<PrintShackPage> {
               setState(() {
                 _customText = value;
               });
-            },
-          ),
-          const SizedBox(height: 16),
-
-          // Font Selector
-          DropdownButtonFormField<String>(
-            value: _selectedFont,
-            decoration: const InputDecoration(
-              labelText: 'Select Font',
-              border: OutlineInputBorder(),
-            ),
-            items: _fonts.map((String font) {
-              return DropdownMenuItem<String>(
-                value: font,
-                child: Text(font),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  _selectedFont = newValue;
-                });
-              }
             },
           ),
           const SizedBox(height: 16),
@@ -182,7 +156,6 @@ class _PrintShackPageState extends State<PrintShackPage> {
                 cartService.addToCart(
                   product,
                   customText: _customText,
-                  customFont: _selectedFont,
                   customColorName: colorName,
                 );
 

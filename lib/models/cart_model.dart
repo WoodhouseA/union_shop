@@ -6,7 +6,6 @@ class CartItem {
   final String? size;
   final String? color;
   final String? customText;
-  final String? customFont;
   final String? customColorName;
 
   CartItem({
@@ -15,7 +14,6 @@ class CartItem {
     this.size,
     this.color,
     this.customText,
-    this.customFont,
     this.customColorName,
   });
 }

@@ -60,8 +60,6 @@ class CartPage extends StatelessWidget {
                           if (item.color != null) Text('Color: ${item.color}'),
                           if (item.customText != null)
                             Text('Text: ${item.customText}'),
-                          if (item.customFont != null)
-                            Text('Font: ${item.customFont}'),
                           if (item.customColorName != null)
                             Text('Print Color: ${item.customColorName}'),
                         ],
@@ -78,7 +76,6 @@ class CartPage extends StatelessWidget {
                                 item.size,
                                 item.color,
                                 customText: item.customText,
-                                customFont: item.customFont,
                                 customColorName: item.customColorName,
                               );
                             },
@@ -93,7 +90,6 @@ class CartPage extends StatelessWidget {
                                 item.size,
                                 item.color,
                                 customText: item.customText,
-                                customFont: item.customFont,
                                 customColorName: item.customColorName,
                               );
                             },
@@ -106,7 +102,6 @@ class CartPage extends StatelessWidget {
                                 item.size,
                                 item.color,
                                 customText: item.customText,
-                                customFont: item.customFont,
                                 customColorName: item.customColorName,
                               );
                             },
