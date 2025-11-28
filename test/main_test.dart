@@ -138,6 +138,23 @@ void main() {
 
     expect(find.text('Sale Page'), findsOneWidget);
   });
+
+  testWidgets('HomeScreen navigates to product page', (WidgetTester tester) async {
+    // Set surface size to ensure grid items fit
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await waitForLoad(tester);
+
+    final productCard = find.text('Test Product 1');
+    await tester.ensureVisible(productCard);
+    await tester.tap(productCard);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Product prod-001'), findsOneWidget);
+  });
 }
 
 // Mock HTTP classes for NetworkImage
