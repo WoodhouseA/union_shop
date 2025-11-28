@@ -51,7 +51,10 @@ class _CollectionPageState extends State<CollectionPage> {
       
       double max = 1000;
       if (products.isNotEmpty) {
-        max = products.map((p) => p.price).reduce((a, b) => a > b ? a : b);
+        max = products
+            .map((p) =>
+                (p.onSale && p.salePrice != null) ? p.salePrice! : p.price)
+            .reduce((a, b) => a > b ? a : b);
       }
 
       setState(() {
@@ -74,9 +77,12 @@ class _CollectionPageState extends State<CollectionPage> {
     List<Product> temp = List.from(_allProducts);
 
     // Filter
-    temp = temp.where((p) => 
-      p.price >= _currentPriceRange.start && p.price <= _currentPriceRange.end
-    ).toList();
+    temp = temp.where((p) {
+      final effectivePrice =
+          (p.onSale && p.salePrice != null) ? p.salePrice! : p.price;
+      return effectivePrice >= _currentPriceRange.start &&
+          effectivePrice <= _currentPriceRange.end;
+    }).toList();
 
     // Sort
     switch (_sortOption) {
@@ -87,10 +93,22 @@ class _CollectionPageState extends State<CollectionPage> {
         temp.sort((a, b) => b.name.compareTo(a.name));
         break;
       case 'price_asc':
-        temp.sort((a, b) => a.price.compareTo(b.price));
+        temp.sort((a, b) {
+          final priceA =
+              (a.onSale && a.salePrice != null) ? a.salePrice! : a.price;
+          final priceB =
+              (b.onSale && b.salePrice != null) ? b.salePrice! : b.price;
+          return priceA.compareTo(priceB);
+        });
         break;
       case 'price_desc':
-        temp.sort((a, b) => b.price.compareTo(a.price));
+        temp.sort((a, b) {
+          final priceA =
+              (a.onSale && a.salePrice != null) ? a.salePrice! : a.price;
+          final priceB =
+              (b.onSale && b.salePrice != null) ? b.salePrice! : b.price;
+          return priceB.compareTo(priceA);
+        });
         break;
     }
 
