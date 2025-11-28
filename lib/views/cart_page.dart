@@ -29,8 +29,13 @@ class CartPage extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                       title: Text(item.product.name),
-                      subtitle:
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text('£${item.product.price.toStringAsFixed(2)}'),
+                          if (item.size != null) Text('Size: ${item.size}'),
+                        ],
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
