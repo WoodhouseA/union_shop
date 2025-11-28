@@ -70,5 +70,42 @@ void main() {
 
       expect(cartService.items.length, 2);
     });
+
+    test('removeFromCart should remove item', () {
+      cartService.addToCart(testProduct, size: 'S', color: 'Red');
+      cartService.removeFromCart(testProduct.id, 'S', 'Red');
+
+      expect(cartService.items, isEmpty);
+    });
+
+    test('updateQuantity should update quantity', () {
+      cartService.addToCart(testProduct, size: 'S', color: 'Red');
+      cartService.updateQuantity(testProduct.id, 5, 'S', 'Red');
+
+      expect(cartService.items.first.quantity, 5);
+    });
+
+    test('updateQuantity to 0 should remove item', () {
+      cartService.addToCart(testProduct, size: 'S', color: 'Red');
+      cartService.updateQuantity(testProduct.id, 0, 'S', 'Red');
+
+      expect(cartService.items, isEmpty);
+    });
+
+    test('clearCart should remove all items', () {
+      cartService.addToCart(testProduct, size: 'S', color: 'Red');
+      cartService.addToCart(saleProduct);
+      cartService.clearCart();
+
+      expect(cartService.items, isEmpty);
+    });
+
+    test('totalPrice should calculate correctly', () {
+      cartService.addToCart(testProduct,
+          size: 'S', color: 'Red', quantity: 2); // 10 * 2 = 20
+      cartService.addToCart(saleProduct, quantity: 1); // 15 * 1 = 15
+
+      expect(cartService.totalPrice, 35.0);
+    });
   });
 }
