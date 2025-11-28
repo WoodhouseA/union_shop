@@ -6,6 +6,7 @@ import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/about_us_page.dart';
 import 'package:union_shop/widgets/footer.dart';
 import 'package:union_shop/views/collections_page.dart';
+import 'package:union_shop/views/sale_collection_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
 
 void main() {
@@ -41,7 +42,8 @@ class UnionShopApp extends StatelessWidget {
         '/about': (context) => const PageWrapper(child: AboutUsPage()),
         '/collections': (context) =>
             const PageWrapper(child: CollectionsPage()),
-        '/cart': (context) => const PageWrapper(child: CartPage(), scrollable: false),
+        '/cart': (context) => const PageWrapper(scrollable: false, child: CartPage()),
+        '/sale': (context) => const PageWrapper(child: SaleCollectionPage()),
       },
     );
   }
