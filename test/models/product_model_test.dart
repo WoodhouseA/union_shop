@@ -70,5 +70,40 @@ void main() {
       expect(product.price, 10.0);
       expect(product.salePrice, 8.0);
     });
+
+    test('fromJson should handle null salePrice', () {
+      final json = {
+        'id': '1',
+        'collectionId': 'col1',
+        'name': 'Test Product',
+        'price': 10.0,
+        'onSale': false,
+        'salePrice': null,
+        'imageUrl': 'http://example.com/image.jpg',
+        'sizes': [],
+        'colors': [],
+      };
+
+      final product = Product.fromJson(json);
+
+      expect(product.salePrice, null);
+    });
+
+    test('fromJson should default onSale to false if missing', () {
+      final json = {
+        'id': '1',
+        'collectionId': 'col1',
+        'name': 'Test Product',
+        'price': 10.0,
+        // onSale missing
+        'imageUrl': 'http://example.com/image.jpg',
+        'sizes': [],
+        'colors': [],
+      };
+
+      final product = Product.fromJson(json);
+
+      expect(product.onSale, false);
+    });
   });
 }
