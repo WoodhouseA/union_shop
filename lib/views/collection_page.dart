@@ -49,17 +49,15 @@ class _CollectionPageState extends State<CollectionPage> {
     try {
       final products = await _productService.getProductsByCollection(widget.collectionId);
       
-      double min = 0;
       double max = 1000;
       if (products.isNotEmpty) {
-        min = products.map((p) => p.price).reduce((a, b) => a < b ? a : b);
         max = products.map((p) => p.price).reduce((a, b) => a > b ? a : b);
       }
 
       setState(() {
         _allProducts = products;
-        _minPrice = min;
-        _maxPrice = max + 1; // Add a bit of buffer
+        _minPrice = 0;
+        _maxPrice = max + 1;
         _currentPriceRange = RangeValues(_minPrice, _maxPrice);
         _applyFiltersAndSort();
         _isLoading = false;
