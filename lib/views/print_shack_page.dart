@@ -175,7 +175,7 @@ class _PrintShackPageState extends State<PrintShackPage> {
 
     final cartService = Provider.of<CartService>(context, listen: false);
     final product = Product(
-      id: 'personalisation-${DateTime.now().millisecondsSinceEpoch}',
+      id: 'personalisation-${_numberOfLines}-line',
       collectionId: 'service',
       name:
           'Personalisation (${_numberOfLines == 1 ? "One Line" : "Two Lines"})',
