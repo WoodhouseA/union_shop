@@ -30,13 +30,22 @@ class _PageWrapperState extends State<PageWrapper> {
       body: Stack(
         children: [
           widget.scrollable
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      widget.child,
-                      const Footer(),
-                    ],
-                  ),
+              ? LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraints.maxHeight),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            widget.child,
+                            const Footer(),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 )
               : Column(
                   children: [
