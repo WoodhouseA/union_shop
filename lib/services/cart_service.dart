@@ -11,6 +11,10 @@ class CartService with ChangeNotifier {
     return _items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
   }
 
+  int get totalItems {
+    return _items.fold(0, (sum, item) => sum + item.quantity);
+  }
+
   void addToCart(Product product) {
     final existingIndex = _items.indexWhere((item) => item.product.id == product.id);
     if (existingIndex != -1) {
