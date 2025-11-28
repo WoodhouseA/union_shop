@@ -7,11 +7,13 @@ import 'package:union_shop/widgets/product_card.dart';
 class CollectionPage extends StatefulWidget {
   final String collectionId;
   final String collectionName;
+  final ProductService? productService;
 
   const CollectionPage({
     super.key,
     required this.collectionId,
     required this.collectionName,
+    this.productService,
   });
 
   @override
@@ -19,7 +21,7 @@ class CollectionPage extends StatefulWidget {
 }
 
 class _CollectionPageState extends State<CollectionPage> {
-  final ProductService _productService = ProductService();
+  late final ProductService _productService;
   
   List<Product> _allProducts = [];
   List<Product> _displayedProducts = [];
@@ -41,6 +43,7 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   void initState() {
     super.initState();
+    _productService = widget.productService ?? ProductService();
     _loadProducts();
   }
 
