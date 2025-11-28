@@ -1,29 +1,25 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:union_shop/services/collection_service.dart';
 
 class CollectionsPage extends StatefulWidget {
-  const CollectionsPage({super.key});
+  final CollectionService? collectionService;
+
+  const CollectionsPage({super.key, this.collectionService});
 
   @override
   State<CollectionsPage> createState() => _CollectionsPageState();
 }
 
 class _CollectionsPageState extends State<CollectionsPage> {
+  late final CollectionService _collectionService;
   late Future<List<Map<String, dynamic>>> _collectionsFuture;
 
   @override
   void initState() {
     super.initState();
-    _collectionsFuture = _loadCollections();
-  }
-
-  Future<List<Map<String, dynamic>>> _loadCollections() async {
-    final String jsonString =
-        await rootBundle.loadString('assets/collections.json');
-    final List<dynamic> jsonResponse = json.decode(jsonString);
-    return jsonResponse.cast<Map<String, dynamic>>();
+    _collectionService = widget.collectionService ?? CollectionService();
+    _collectionsFuture = _collectionService.getAllCollections();
   }
 
   @override
