@@ -18,11 +18,19 @@ class _ProductPageState extends State<ProductPage> {
   final ProductService _productService = ProductService();
   late Future<Product> _productFuture;
   int _quantity = 1;
+  String? _selectedSize;
 
   @override
   void initState() {
     super.initState();
     _productFuture = _productService.getProductById(widget.productId);
+    _productFuture.then((product) {
+      if (product.sizes.isNotEmpty) {
+        setState(() {
+          _selectedSize = product.sizes.first;
+        });
+      }
+    });
   }
 
   @override
@@ -122,6 +130,37 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
+                      if (product.sizes.isNotEmpty) ...[
+                        Row(
+                          children: [
+                            const Text(
+                              'Size',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const Spacer(),
+                            DropdownButton<String>(
+                              value: _selectedSize,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedSize = newValue!;
+                                });
+                              },
+                              items: product.sizes
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                       Row(
                         children: [
                           const Text(
@@ -162,6 +201,15 @@ class _ProductPageState extends State<ProductPage> {
                         onPressed: () {
                           final cartService = Provider.of<CartService>(context, listen: false);
                           final product = snapshot.data!;
+                          if (product.sizes.isNotEmpty && _selectedSize == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a size.'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            return;
+                          }
                           for (int i = 0; i < _quantity; i++) {
                             cartService.addToCart(product);
                           }
