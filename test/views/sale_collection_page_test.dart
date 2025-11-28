@@ -51,7 +51,6 @@ void main() {
       (ByteData? message) async {
         if (message == null) return null;
         final key = utf8.decode(message.buffer.asUint8List(message.offsetInBytes, message.lengthInBytes));
-        // print('MockAssets: Requested $key');
         
         if (key == 'assets/products.json') {
           final String jsonStr = json.encode(currentMockProducts);
@@ -62,4 +61,38 @@ void main() {
       },
     );
   });
+
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
+      'flutter/assets',
+      null,
+    );
+  });
+
+  Widget createWidgetUnderTest() {
+    return const MaterialApp(
+      home: Scaffold(
+        body: SaleCollectionPage(),
+      ),
+    );
+  }
+
+  Future<void> waitForLoad(WidgetTester tester) async {
+    await tester.pump();
+    for (int i = 0; i < 100; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+      if (find.byType(CircularProgressIndicator).evaluate().isEmpty) {
+        return;
+      }
+    }
+    try {
+      await tester.pumpAndSettle(const Duration(milliseconds: 100), EnginePhase.sendSemanticsUpdate, const Duration(seconds: 2));
+      if (find.byType(CircularProgressIndicator).evaluate().isEmpty) {
+        return;
+      }
+    } catch (e) {
+      // Ignore
+    }
+    throw Exception('Timed out waiting for products to load');
+  }
 }
