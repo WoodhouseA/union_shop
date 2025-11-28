@@ -96,4 +96,16 @@ void main() {
     await tester.pump();
     expect(find.text('1'), findsOneWidget);
   });
+
+  testWidgets('validation shows error if text is empty', (WidgetTester tester) async {
+    final mockCartService = MockCartService();
+    await tester.pumpWidget(createWidgetUnderTest(mockCartService));
+
+    // Try adding to cart without text
+    await tester.tap(find.text('Add to cart'));
+    await tester.pump();
+
+    expect(find.text('Please enter text for Line 1'), findsOneWidget);
+    expect(mockCartService.lastAddedProduct, isNull);
+  });
 }
