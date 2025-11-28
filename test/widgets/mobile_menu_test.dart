@@ -66,4 +66,13 @@ void main() {
     expect(find.text('Personalization'), findsOneWidget);
     expect(find.text('About'), findsOneWidget);
   });
+
+  testWidgets('Navigation to About Us works', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget());
+
+    await tester.tap(find.text('About Us'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('About Page'), findsOneWidget);
+  });
 }
