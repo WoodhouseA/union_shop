@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MobileMenu extends StatelessWidget {
   const MobileMenu({super.key});
@@ -15,20 +16,19 @@ class MobileMenu extends StatelessWidget {
             ListTile(
               title: const Text('Home'),
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (route) => false);
+                context.go('/');
               },
             ),
             ListTile(
               title: const Text('About Us'),
               onTap: () {
-                Navigator.pushNamed(context, '/about');
+                context.go('/about');
               },
             ),
             ListTile(
               title: const Text('Collections'),
               onTap: () {
-                Navigator.pushNamed(context, '/collections');
+                context.go('/collections');
               },
             ),
             ExpansionTile(
@@ -38,14 +38,14 @@ class MobileMenu extends StatelessWidget {
                   title: const Text('Personalization'),
                   contentPadding: const EdgeInsets.only(left: 32),
                   onTap: () {
-                    Navigator.pushNamed(context, '/print-shack');
+                    context.go('/print-shack');
                   },
                 ),
                 ListTile(
                   title: const Text('About'),
                   contentPadding: const EdgeInsets.only(left: 32),
                   onTap: () {
-                    Navigator.pushNamed(context, '/print-shack-about');
+                    context.go('/print-shack-about');
                   },
                 ),
               ],
@@ -53,13 +53,13 @@ class MobileMenu extends StatelessWidget {
             ListTile(
               title: const Text('Sale!'),
               onTap: () {
-                Navigator.pushNamed(context, '/sale');
+                context.go('/sale');
               },
             ),
             ListTile(
               title: const Text('Products'),
               onTap: () {
-                Navigator.pushNamed(context, '/product');
+                context.go('/product/prod-001');
               },
             ),
           ],
