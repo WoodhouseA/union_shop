@@ -30,7 +30,7 @@ class _PrintShackPageState extends State<PrintShackPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Print Shack Customizer',
+            'Print Shack Personalization',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
