@@ -239,24 +239,35 @@ class _CollectionPageState extends State<CollectionPage> {
             child: Center(child: Text('No products match your filters.')),
           )
         else
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16.0),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: currentProducts.length,
-            itemBuilder: (context, index) {
-              final product = currentProducts[index];
-              return InkWell(
-                onTap: () {
-                  context.go('/product/${product.id}');
+          LayoutBuilder(
+            builder: (context, constraints) {
+              int crossAxisCount = 2;
+              if (constraints.maxWidth > 1200) {
+                crossAxisCount = 4;
+              } else if (constraints.maxWidth > 800) {
+                crossAxisCount = 3;
+              }
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16.0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: currentProducts.length,
+                itemBuilder: (context, index) {
+                  final product = currentProducts[index];
+                  return InkWell(
+                    onTap: () {
+                      context.go('/product/${product.id}');
+                    },
+                    child: ProductCard(product: product),
+                  );
                 },
-                child: ProductCard(product: product),
               );
             },
           ),
