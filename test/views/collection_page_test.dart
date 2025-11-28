@@ -142,4 +142,17 @@ void main() {
     expect(tester.widget<ProductCard>(newCards.at(1)).product.name, 'Product B');
     expect(tester.widget<ProductCard>(newCards.at(2)).product.name, 'Product A');
   });
+  
+  testWidgets('navigates to product page on tap', (WidgetTester tester) async {
+    final mockService = MockProductService(mockProducts: testProducts);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    final productFinder = find.text('Product A');
+    await tester.ensureVisible(productFinder);
+    await tester.tap(productFinder);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Product 1'), findsOneWidget);
+  });
 }
