@@ -68,3 +68,60 @@ final List<int> _transparentImage = [
   0x44, 0x01, 0x00, 0x3b
 ];
 
+void main() {
+  setUpAll(() {
+    HttpOverrides.global = TestHttpOverrides();
+  });
+
+  testWidgets('CartPage displays empty message when cart is empty',
+      (WidgetTester tester) async {
+    final cartService = CartService();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<CartService>.value(
+        value: cartService,
+        child: const MaterialApp(
+          home: Scaffold(body: CartPage()),
+        ),
+      ),
+    );
+
+    expect(find.text('Your cart is empty.'), findsOneWidget);
+  });
+
+  testWidgets('CartPage displays items and total', (WidgetTester tester) async {
+    final cartService = CartService();
+    final product = Product(
+      id: '1',
+      collectionId: 'col1',
+      name: 'Test Product',
+      price: 20.0,
+      onSale: false,
+      imageUrl: 'https://example.com/image.jpg',
+      sizes: ['M'],
+      colors: ['Red'],
+    );
+
+    cartService.addToCart(product, size: 'M', color: 'Red');
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<CartService>.value(
+        value: cartService,
+        child: const MaterialApp(
+          home: Scaffold(body: CartPage()),
+        ),
+      ),
+    );
+
+    // Allow image loading
+    await tester.pump();
+
+    expect(find.text('Test Product'), findsOneWidget);
+    expect(find.text('£20.00'), findsOneWidget); // One in list
+    expect(find.text('Total: £20.00'), findsOneWidget);
+    expect(find.text('Size: M'), findsOneWidget);
+    expect(find.text('Color: Red'), findsOneWidget);
+  });
+
+
+}
