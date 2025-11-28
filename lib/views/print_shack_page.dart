@@ -40,33 +40,29 @@ class _PrintShackPageState extends State<PrintShackPage> {
           // Options
           const Text('Number of Lines:',
               style: TextStyle(fontWeight: FontWeight.bold)),
-          Row(
-            children: [
-              Radio<int>(
-                value: 1,
-                groupValue: _numberOfLines,
-                onChanged: (val) {
-                  setState(() {
-                    _numberOfLines = val!;
-                  });
-                },
-              ),
-              const Text('One Line of Text (£3.00)'),
-            ],
-          ),
-          Row(
-            children: [
-              Radio<int>(
-                value: 2,
-                groupValue: _numberOfLines,
-                onChanged: (val) {
-                  setState(() {
-                    _numberOfLines = val!;
-                  });
-                },
-              ),
-              const Text('Two Lines of Text (£5.00)'),
-            ],
+          RadioGroup<int>(
+            groupValue: _numberOfLines,
+            onChanged: (val) {
+              setState(() {
+                _numberOfLines = val!;
+              });
+            },
+            child: const Column(
+              children: [
+                Row(
+                  children: [
+                    Radio<int>(value: 1),
+                    Text('One Line of Text (£3.00)'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Radio<int>(value: 2),
+                    Text('Two Lines of Text (£5.00)'),
+                  ],
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(height: 16),
@@ -175,7 +171,7 @@ class _PrintShackPageState extends State<PrintShackPage> {
 
     final cartService = Provider.of<CartService>(context, listen: false);
     final product = Product(
-      id: 'personalisation-${_numberOfLines}-line',
+      id: 'personalisation-$_numberOfLines-line',
       collectionId: 'service',
       name:
           'Personalisation (${_numberOfLines == 1 ? "One Line" : "Two Lines"})',
