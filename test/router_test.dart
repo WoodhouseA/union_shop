@@ -148,4 +148,48 @@ void main() {
 
     expect(find.byType(HomeScreen), findsOneWidget);
   });
+
+  testWidgets('Router navigates to About Us', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    router.go('/about');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(AboutUsPage), findsOneWidget);
+  });
+
+  testWidgets('Router navigates to Collections', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    router.go('/collections');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(CollectionsPage), findsOneWidget);
+  });
+
+  testWidgets('Router navigates to Sale', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    router.go('/sale');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(SaleCollectionPage), findsOneWidget);
+  });
+  
+  testWidgets('Router navigates to Cart', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    router.go('/cart');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(CartPage), findsOneWidget);
+  });
 }
