@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:union_shop/views/collection_page.dart';
+import 'package:go_router/go_router.dart';
 
 class CollectionsPage extends StatefulWidget {
   const CollectionsPage({super.key});
@@ -89,15 +89,10 @@ class _CollectionCardState extends State<_CollectionCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CollectionPage(
-              collectionId: widget.collection['id']!,
-              collectionName: widget.collection['name']!,
-            ),
-          ),
-        );
+        context.go(Uri(
+          path: '/collection/${widget.collection['id']}',
+          queryParameters: {'name': widget.collection['name']},
+        ).toString());
       },
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
