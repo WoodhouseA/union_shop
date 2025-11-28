@@ -6,7 +6,6 @@ import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/views/cart_page.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/about_us_page.dart';
-import 'package:union_shop/widgets/footer.dart';
 import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/sale_collection_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
@@ -216,7 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
 
         // Footer
-        const Footer(),
       ],
     );
   }
