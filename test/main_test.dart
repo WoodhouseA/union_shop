@@ -126,6 +126,18 @@ void main() {
     expect(find.text('Test Product 1'), findsOneWidget);
     expect(find.text('Test Product 2'), findsOneWidget);
   });
+
+  testWidgets('HomeScreen navigates to sale page', (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+    await waitForLoad(tester);
+
+    final saleButton = find.widgetWithText(ElevatedButton, 'CHECK OUT THE SALE!');
+    await tester.ensureVisible(saleButton);
+    await tester.tap(saleButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sale Page'), findsOneWidget);
+  });
 }
 
 // Mock HTTP classes for NetworkImage
