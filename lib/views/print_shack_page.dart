@@ -11,17 +11,12 @@ class PrintShackPage extends StatefulWidget {
 }
 
 class _PrintShackPageState extends State<PrintShackPage> {
-  String _customText = '';
-  Color _selectedColor = Colors.black;
+  int _numberOfLines = 1;
+  String _line1Text = '';
+  String _line2Text = '';
+  int _quantity = 1;
 
-  final Map<String, Color> _colors = {
-    'Black': Colors.black,
-    'Red': Colors.red,
-    'Blue': Colors.blue,
-    'Green': Colors.green,
-    'Purple': Colors.purple,
-    'Orange': Colors.orange,
-  };
+  double get _price => _numberOfLines == 1 ? 3.00 : 5.00;
 
   @override
   Widget build(BuildContext context) {
@@ -31,146 +26,179 @@ class _PrintShackPageState extends State<PrintShackPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Print Shack Personalization',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          // Preview Section
-          const Text(
-            'Preview:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'Personalisation',
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Container(
-            height: 200,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              _customText.isEmpty ? 'Your Text Here' : _customText,
-              style: TextStyle(
-                color: _selectedColor,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
+          Text(
+            '£${_price.toStringAsFixed(2)}',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
           ),
+          const Text('Tax included.'),
           const SizedBox(height: 24),
 
-          // Form Section
-          const Text(
-            'Customize Your Product',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          // Options
+          const Text('Number of Lines:',
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              Radio<int>(
+                value: 1,
+                groupValue: _numberOfLines,
+                onChanged: (val) {
+                  setState(() {
+                    _numberOfLines = val!;
+                  });
+                },
+              ),
+              const Text('One Line of Text (£3.00)'),
+            ],
           ),
+          Row(
+            children: [
+              Radio<int>(
+                value: 2,
+                groupValue: _numberOfLines,
+                onChanged: (val) {
+                  setState(() {
+                    _numberOfLines = val!;
+                  });
+                },
+              ),
+              const Text('Two Lines of Text (£5.00)'),
+            ],
+          ),
+
           const SizedBox(height: 16),
 
-          // Text Input
-          TextFormField(
+          TextField(
             decoration: const InputDecoration(
-              labelText: 'Custom Text',
+              labelText: 'Line 1 Text',
               border: OutlineInputBorder(),
-              helperText: 'Enter the text you want to print',
+              helperText: 'Max 10 characters',
             ),
-            onChanged: (value) {
-              setState(() {
-                _customText = value;
-              });
-            },
+            maxLength: 10,
+            onChanged: (val) => _line1Text = val,
           ),
-          const SizedBox(height: 16),
 
-          // Color Selector
-          DropdownButtonFormField<Color>(
-            value: _selectedColor,
-            decoration: const InputDecoration(
-              labelText: 'Select Color',
-              border: OutlineInputBorder(),
+          if (_numberOfLines == 2) ...[
+            const SizedBox(height: 16),
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Line 2 Text',
+                border: OutlineInputBorder(),
+                helperText: 'Max 10 characters',
+              ),
+              maxLength: 10,
+              onChanged: (val) => _line2Text = val,
             ),
-            items: _colors.entries.map((entry) {
-              return DropdownMenuItem<Color>(
-                value: entry.value,
+          ],
+
+          const SizedBox(height: 24),
+
+          // Quantity
+          Row(
+            children: [
+              const Text('Quantity',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 16),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                ),
                 child: Row(
                   children: [
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: entry.value,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey),
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: () {
+                        if (_quantity > 1) setState(() => _quantity--);
+                      },
                     ),
-                    const SizedBox(width: 12),
-                    Text(entry.key),
+                    Text('$_quantity'),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        setState(() => _quantity++);
+                      },
+                    ),
                   ],
                 ),
-              );
-            }).toList(),
-            onChanged: (Color? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  _selectedColor = newValue;
-                });
-              }
-            },
+              ),
+            ],
           ),
-          const SizedBox(height: 32),
-          
+
+          const SizedBox(height: 24),
+
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                if (_customText.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Please enter some text to print.')),
-                  );
-                  return;
-                }
-
-                final cartService =
-                    Provider.of<CartService>(context, listen: false);
-
-                // Find the color name
-                String colorName = _colors.entries
-                    .firstWhere((entry) => entry.value == _selectedColor)
-                    .key;
-
-                final product = Product(
-                  id: 'custom-print-001',
-                  collectionId: 'print-shack',
-                  name: 'Custom Print Item',
-                  price: 15.00, // Base price
-                  onSale: false,
-                  imageUrl:
-                      'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854', // Placeholder image
-                  sizes: [],
-                  colors: [],
-                );
-
-                cartService.addToCart(
-                  product,
-                  customText: _customText,
-                  customColorName: colorName,
-                );
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Added to cart!')),
-                );
-              },
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text('Add to Cart'),
+              onPressed: _addToCart,
+              child: const Text('Add to cart'),
             ),
+          ),
+
+          const SizedBox(height: 32),
+
+          const Text(
+            '£3 for one line of text! £5 for two!',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text('One line of text is 10 characters.'),
+          const SizedBox(height: 16),
+          const Text(
+            'Please ensure all spellings are correct before submitting your purchase as we will print your item with the exact wording you provide. We will not be responsible for any incorrect spellings printed onto your garment. Personalised items do not qualify for refunds.',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
         ],
       ),
     );
+  }
+
+  void _addToCart() {
+    if (_line1Text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please enter text for Line 1')));
+      return;
+    }
+    if (_numberOfLines == 2 && _line2Text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please enter text for Line 2')));
+      return;
+    }
+
+    final cartService = Provider.of<CartService>(context, listen: false);
+    final product = Product(
+      id: 'personalisation-${DateTime.now().millisecondsSinceEpoch}',
+      collectionId: 'service',
+      name:
+          'Personalisation (${_numberOfLines == 1 ? "One Line" : "Two Lines"})',
+      price: _price,
+      onSale: false,
+      imageUrl:
+          'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854', // Placeholder
+      sizes: [],
+      colors: [],
+    );
+
+    String customText = _line1Text;
+    if (_numberOfLines == 2) {
+      customText += ' | $_line2Text';
+    }
+
+    cartService.addToCart(
+      product,
+      quantity: _quantity,
+      customText: customText,
+    );
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Added to cart!')));
   }
 }
