@@ -4,7 +4,8 @@ import 'package:union_shop/widgets/mobile_menu.dart';
 
 class PageWrapper extends StatefulWidget {
   final Widget child;
-  const PageWrapper({super.key, required this.child});
+  final bool scrollable;
+  const PageWrapper({super.key, required this.child, this.scrollable = true});
 
   @override
   State<PageWrapper> createState() => _PageWrapperState();
@@ -29,9 +30,11 @@ class _PageWrapperState extends State<PageWrapper> {
         children: [
           if (_isMenuOpen) const MobileMenu(),
           Expanded(
-            child: SingleChildScrollView(
-              child: widget.child,
-            ),
+            child: widget.scrollable
+                ? SingleChildScrollView(
+                    child: widget.child,
+                  )
+                : widget.child,
           ),
         ],
       ),
