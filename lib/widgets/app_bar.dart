@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:union_shop/services/cart_service.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback onMenuPressed;
@@ -81,11 +83,46 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             icon: Icons.person_outline,
                             onPressed: placeholderCallbackForButtons,
                           ),
-                          AppBarButton(
-                            icon: Icons.shopping_bag_outlined,
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/cart');
-                            },
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              AppBarButton(
+                                icon: Icons.shopping_bag_outlined,
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/cart');
+                                },
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Consumer<CartService>(
+                                  builder: (context, cart, child) {
+                                    return cart.items.isEmpty
+                                        ? const SizedBox.shrink()
+                                        : Container(
+                                            padding: const EdgeInsets.all(2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 16,
+                                              minHeight: 16,
+                                            ),
+                                            child: Text(
+                                              cart.totalItems.toString(),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                           AppBarButton(
                             icon: Icons.menu,
