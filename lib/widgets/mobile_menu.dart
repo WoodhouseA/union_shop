@@ -32,6 +32,18 @@ class MobileMenu extends StatelessWidget {
               },
             ),
             ListTile(
+              title: const Text('Print Shack'),
+              onTap: () {
+                Navigator.pushNamed(context, '/print-shack');
+              },
+            ),
+            ListTile(
+              title: const Text('Print Shack About'),
+              onTap: () {
+                Navigator.pushNamed(context, '/print-shack-about');
+              },
+            ),
+            ListTile(
               title: const Text('Sale!'),
               onTap: () {
                 Navigator.pushNamed(context, '/sale');
