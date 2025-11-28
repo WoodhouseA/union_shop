@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/product_service.dart';
-import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
 import 'package:union_shop/widgets/product_card.dart';
 
@@ -61,13 +61,7 @@ class _SaleCollectionPageState extends State<SaleCollectionPage> {
                   final product = products[index];
                   return InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PageWrapper(child: ProductPage(productId: product.id)),
-                        ),
-                      );
+                      context.go('/product/${product.id}');
                     },
                     child: ProductCard(product: product),
                   );
