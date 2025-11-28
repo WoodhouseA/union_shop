@@ -32,7 +32,30 @@ class CartPage extends StatelessWidget {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('£${item.product.price.toStringAsFixed(2)}'),
+                          if (item.product.onSale &&
+                              item.product.salePrice != null)
+                            Row(
+                              children: [
+                                Text(
+                                  '£${item.product.price.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.lineThrough,
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '£${item.product.salePrice!.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            )
+                          else
+                            Text('£${item.product.price.toStringAsFixed(2)}'),
                           if (item.size != null) Text('Size: ${item.size}'),
                           if (item.color != null) Text('Color: ${item.color}'),
                         ],
