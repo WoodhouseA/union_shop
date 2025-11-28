@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/product_service.dart';
-import 'package:union_shop/widgets/footer.dart';
 
 class ProductPage extends StatefulWidget {
   final String productId;
@@ -302,7 +301,6 @@ class _ProductPageState extends State<ProductPage> {
                     ],
                   ),
                 ),
-                const Footer(),
               ],
             ),
           );
