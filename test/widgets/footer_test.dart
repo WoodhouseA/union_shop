@@ -52,4 +52,30 @@ void main() {
     expect(find.byIcon(Icons.alternate_email), findsOneWidget);
     expect(find.byIcon(Icons.camera_alt), findsOneWidget);
   });
+
+  testWidgets('Footer layout changes on desktop', (WidgetTester tester) async {
+    // Set screen size to desktop
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget());
+
+    // On desktop, sections are in a Row, so no Dividers between them
+    expect(find.byType(Divider), findsNothing);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Footer layout changes on mobile', (WidgetTester tester) async {
+    // Set screen size to mobile
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget());
+
+    // On mobile, sections are in a Column with Dividers
+    expect(find.byType(Divider), findsNWidgets(2));
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
 }
