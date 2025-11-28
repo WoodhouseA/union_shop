@@ -73,16 +73,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             },
                           ),
                         ),
-                        if (isDesktop) ...[
-                          const SizedBox(width: 32),
-                          const _NavBarItem(title: 'Home', path: '/'),
-                          const _NavBarItem(title: 'About Us', path: '/about'),
-                          const _NavBarItem(
-                              title: 'Collections', path: '/collections'),
-                          const _PrintShackMenu(),
-                          const _NavBarItem(title: 'Sale!', path: '/sale'),
-                        ],
-                        const Spacer(),
+                        if (isDesktop)
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                _NavBarItem(title: 'Home', path: '/'),
+                                _NavBarItem(title: 'About Us', path: '/about'),
+                                _NavBarItem(
+                                    title: 'Collections', path: '/collections'),
+                                _PrintShackMenu(),
+                                _NavBarItem(title: 'Sale!', path: '/sale'),
+                              ],
+                            ),
+                          )
+                        else
+                          const Spacer(),
                         ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 600),
                           child: Row(
