@@ -5,6 +5,7 @@ class Product {
   final double price;
   final String imageUrl;
   final List<String> sizes;
+  final List<String> colors;
 
   Product({
     required this.id,
@@ -13,6 +14,7 @@ class Product {
     required this.price,
     required this.imageUrl,
     required this.sizes,
+    required this.colors,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Product {
       price: json['price'].toDouble(),
       imageUrl: json['imageUrl'],
       sizes: List<String>.from(json['sizes'] ?? []),
+      colors: List<String>.from(json['colors'] ?? []),
     );
   }
 }
