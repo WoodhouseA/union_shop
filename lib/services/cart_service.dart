@@ -15,12 +15,19 @@ class CartService with ChangeNotifier {
     return _items.fold(0, (sum, item) => sum + item.quantity);
   }
 
-  void addToCart(Product product) {
-    final existingIndex = _items.indexWhere((item) => item.product.id == product.id);
+  void addToCart(Product product, {String? size}) {
+    // If the product has sizes but no size is selected, do not add to cart.
+    if (product.sizes.isNotEmpty && size == null) {
+      return;
+    }
+
+    final existingIndex = _items.indexWhere(
+        (item) => item.product.id == product.id && item.size == size);
+        
     if (existingIndex != -1) {
       _items[existingIndex].quantity++;
     } else {
-      _items.add(CartItem(product: product));
+      _items.add(CartItem(product: product, size: size));
     }
     notifyListeners();
   }
