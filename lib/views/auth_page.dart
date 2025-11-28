@@ -22,9 +22,12 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
-        child: _showLoginPage
-            ? LoginForm(onToggle: _toggleScreens)
-            : SignupForm(onToggle: _toggleScreens),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: _showLoginPage
+              ? LoginForm(onToggle: _toggleScreens)
+              : SignupForm(onToggle: _toggleScreens),
+        ),
       ),
     );
   }
