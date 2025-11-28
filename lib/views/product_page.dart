@@ -19,6 +19,7 @@ class _ProductPageState extends State<ProductPage> {
   late Future<Product> _productFuture;
   int _quantity = 1;
   String? _selectedSize;
+  String? _selectedColor;
 
   @override
   void initState() {
@@ -28,6 +29,11 @@ class _ProductPageState extends State<ProductPage> {
       if (product.sizes.isNotEmpty) {
         setState(() {
           _selectedSize = product.sizes.first;
+        });
+      }
+      if (product.colors.isNotEmpty) {
+        setState(() {
+          _selectedColor = product.colors.first;
         });
       }
     });
@@ -161,6 +167,37 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         const SizedBox(height: 24),
                       ],
+                      if (product.colors.isNotEmpty) ...[
+                        Row(
+                          children: [
+                            const Text(
+                              'Color',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const Spacer(),
+                            DropdownButton<String>(
+                              value: _selectedColor,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedColor = newValue!;
+                                });
+                              },
+                              items: product.colors
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                       Row(
                         children: [
                           const Text(
@@ -210,8 +247,17 @@ class _ProductPageState extends State<ProductPage> {
                             );
                             return;
                           }
+                          if (product.colors.isNotEmpty && _selectedColor == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a color.'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            return;
+                          }
                           for (int i = 0; i < _quantity; i++) {
-                            cartService.addToCart(product, size: _selectedSize);
+                            cartService.addToCart(product, size: _selectedSize, color: _selectedColor);
                           }
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
