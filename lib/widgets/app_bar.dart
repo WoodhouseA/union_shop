@@ -74,10 +74,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ),
                         ),
                         if (isDesktop)
-                          Expanded(
+                          const Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 _NavBarItem(title: 'Home', path: '/'),
                                 _NavBarItem(title: 'About Us', path: '/about'),
                                 _NavBarItem(
