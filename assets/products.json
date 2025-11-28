@@ -5,7 +5,8 @@
         "name": "Cool Summer T-Shirt",
         "price": 19.99,
         "imageUrl": "https://picsum.photos/seed/prod-001/400/300",
-        "sizes": ["S", "M", "L", "XL"]
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Red", "Blue", "Green"]
     },
     {
         "id": "prod-002",
@@ -13,7 +14,8 @@
         "name": "Beach Shorts",
         "price": 29.99,
         "imageUrl": "https://picsum.photos/seed/prod-002/400/300",
-        "sizes": ["S", "M", "L"]
+        "sizes": ["S", "M", "L"],
+        "colors": ["Black", "White"]
     },
     {
         "id": "prod-003",
@@ -21,7 +23,8 @@
         "name": "Warm Winter Jacket",
         "price": 79.99,
         "imageUrl": "https://picsum.photos/seed/prod-003/400/300",
-        "sizes": ["M", "L", "XL"]
+        "sizes": ["M", "L", "XL"],
+        "colors": ["Gray", "Navy"]
     },
     {
         "id": "prod-004",
@@ -29,7 +32,8 @@
         "name": "Woolly Scarf",
         "price": 15.99,
         "imageUrl": "https://picsum.photos/seed/prod-004/400/300",
-        "sizes": []
+        "sizes": [],
+        "colors": ["Purple", "Yellow"]
     },
     {
         "id": "prod-005",
@@ -37,7 +41,8 @@
         "name": "Light Spring Jacket",
         "price": 49.99,
         "imageUrl": "https://picsum.photos/seed/prod-005/400/300",
-        "sizes": ["S", "M", "L"]
+        "sizes": ["S", "M", "L"],
+        "colors": ["Pink", "Beige"]
     },
     {
         "id": "prod-006",
@@ -45,6 +50,7 @@
         "name": "Cosy Autumn Sweater",
         "price": 39.99,
         "imageUrl": "https://picsum.photos/seed/prod-006/400/300",
-        "sizes": ["S", "M", "L", "XL"]
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Brown", "Orange"]
     }
 ]
