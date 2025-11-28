@@ -73,4 +73,33 @@ void main() {
     expect(find.byType(CustomAppBar), findsOneWidget);
     expect(find.byType(Footer), findsOneWidget);
   });
+
+  testWidgets('PageWrapper toggles MobileMenu', (WidgetTester tester) async {
+    // Set screen size to mobile to ensure menu button is visible
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: const Text('Test Content'),
+    ));
+
+    // Initially menu is hidden
+    expect(find.byType(MobileMenu), findsNothing);
+
+    // Tap menu button
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pump();
+
+    // Menu should be visible
+    expect(find.byType(MobileMenu), findsOneWidget);
+
+    // Tap menu button again
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pump();
+
+    // Menu should be hidden
+    expect(find.byType(MobileMenu), findsNothing);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
 }
