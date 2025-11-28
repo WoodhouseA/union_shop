@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:union_shop/models/product_model.dart';
+import 'package:union_shop/services/cart_service.dart';
 
 class PrintShackPage extends StatefulWidget {
   const PrintShackPage({super.key});
@@ -148,7 +151,41 @@ class _PrintShackPageState extends State<PrintShackPage> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Placeholder for add to cart or order functionality
+                if (_customText.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Please enter some text to print.')),
+                  );
+                  return;
+                }
+
+                final cartService =
+                    Provider.of<CartService>(context, listen: false);
+
+                // Find the color name
+                String colorName = _colors.entries
+                    .firstWhere((entry) => entry.value == _selectedColor)
+                    .key;
+
+                final product = Product(
+                  id: 'custom-print-001',
+                  collectionId: 'print-shack',
+                  name: 'Custom Print Item',
+                  price: 15.00, // Base price
+                  onSale: false,
+                  imageUrl:
+                      'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854', // Placeholder image
+                  sizes: [],
+                  colors: [],
+                );
+
+                cartService.addToCart(
+                  product,
+                  customText: _customText,
+                  customFont: _selectedFont,
+                  customColorName: colorName,
+                );
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Added to cart!')),
                 );
