@@ -211,7 +211,7 @@ class _ProductPageState extends State<ProductPage> {
                             return;
                           }
                           for (int i = 0; i < _quantity; i++) {
-                            cartService.addToCart(product);
+                            cartService.addToCart(product, size: _selectedSize);
                           }
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
