@@ -83,7 +83,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ),
                           AppBarButton(
                             icon: Icons.shopping_bag_outlined,
-                            onPressed: placeholderCallbackForButtons,
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/cart');
+                            },
                           ),
                           AppBarButton(
                             icon: Icons.menu,
