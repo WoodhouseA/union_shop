@@ -46,4 +46,14 @@ void main() {
     expect(find.text('Please enter your email'), findsNothing);
     expect(find.text('Please enter your password'), findsNothing);
   });
+
+  testWidgets('Toggle button triggers callback', (WidgetTester tester) async {
+    bool toggled = false;
+    await tester.pumpWidget(createTestWidget(onToggle: () {
+      toggled = true;
+    }));
+
+    await tester.tap(find.text('Already have an account? Login'));
+    expect(toggled, isTrue);
+  });
 }
