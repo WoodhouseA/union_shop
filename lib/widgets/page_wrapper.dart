@@ -26,16 +26,14 @@ class _PageWrapperState extends State<PageWrapper> {
       appBar: CustomAppBar(
         onMenuPressed: _toggleMenu,
       ),
-      body: Column(
+      body: Stack(
         children: [
+          widget.scrollable
+              ? SingleChildScrollView(
+                  child: widget.child,
+                )
+              : widget.child,
           if (_isMenuOpen) const MobileMenu(),
-          Expanded(
-            child: widget.scrollable
-                ? SingleChildScrollView(
-                    child: widget.child,
-                  )
-                : widget.child,
-          ),
         ],
       ),
     );
