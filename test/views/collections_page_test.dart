@@ -64,4 +64,23 @@ void main() {
       routerConfig: router,
     );
   }
+
+  testWidgets('shows loading indicator initially', (WidgetTester tester) async {
+    final mockService = MockCollectionService(mockCollections: testCollections);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.pumpAndSettle(); // Finish loading
+  });
+
+  testWidgets('shows collections after loading', (WidgetTester tester) async {
+    final mockService = MockCollectionService(mockCollections: testCollections);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Collection 1'), findsOneWidget);
+    expect(find.text('Collection 2'), findsOneWidget);
+    // We expect 2 cards
+    expect(find.byType(Card), findsNWidgets(2));
+  });
 }
