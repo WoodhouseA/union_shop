@@ -83,4 +83,12 @@ void main() {
     // We expect 2 cards
     expect(find.byType(Card), findsNWidgets(2));
   });
+
+  testWidgets('shows error message on failure', (WidgetTester tester) async {
+    final mockService = MockCollectionService(shouldFail: true);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Error'), findsOneWidget);
+  });
 }
