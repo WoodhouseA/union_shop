@@ -1,7 +1,187 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:union_shop/main.dart';
+import 'package:union_shop/services/cart_service.dart';
 
 void main() {
-  test('main test', () {
-    // TODO: Implement test
+  final mockProducts = [
+    {
+      "id": "prod-001",
+      "collectionId": "summer",
+      "name": "Test Product 1",
+      "price": 20.0,
+      "onSale": false,
+      "salePrice": null,
+      "imageUrl": "https://example.com/img1.jpg",
+      "sizes": ["S"],
+      "colors": ["Red"]
+    },
+    {
+      "id": "prod-002",
+      "collectionId": "winter",
+      "name": "Test Product 2",
+      "price": 30.0,
+      "onSale": true,
+      "salePrice": 25.0,
+      "imageUrl": "https://example.com/img2.jpg",
+      "sizes": ["M"],
+      "colors": ["Blue"]
+    }
+  ];
+
+  setUp(() {
+    rootBundle.evict('assets/products.json');
+    HttpOverrides.global = TestHttpOverrides();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
+      'flutter/assets',
+      (ByteData? message) async {
+        if (message == null) return null;
+        final key = utf8.decode(message.buffer.asUint8List(message.offsetInBytes, message.lengthInBytes));
+        
+        if (key == 'assets/products.json') {
+          final String jsonStr = json.encode(mockProducts);
+          final Uint8List encoded = utf8.encode(jsonStr);
+          return ByteData.view(encoded.buffer);
+        }
+        return null;
+      },
+    );
   });
+
+  tearDown(() {
+    HttpOverrides.global = null;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
+      'flutter/assets',
+      null,
+    );
+  });
+
+  Widget createWidgetUnderTest() {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(
+            body: SingleChildScrollView(
+              child: HomeScreen(),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/sale',
+          builder: (context, state) => const Scaffold(body: Text('Sale Page')),
+        ),
+        GoRoute(
+          path: '/product/:id',
+          builder: (context, state) => Scaffold(body: Text('Product ${state.pathParameters['id']}')),
+        ),
+      ],
+    );
+
+    return ChangeNotifierProvider(
+      create: (_) => CartService(),
+      child: MaterialApp.router(
+        routerConfig: router,
+      ),
+    );
+  }
+
+  Future<void> waitForLoad(WidgetTester tester) async {
+    await tester.pump();
+    for (int i = 0; i < 100; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+      if (find.byType(CircularProgressIndicator).evaluate().isEmpty) {
+        return;
+      }
+    }
+    try {
+      await tester.pumpAndSettle(const Duration(milliseconds: 100), EnginePhase.sendSemanticsUpdate, const Duration(seconds: 2));
+    } catch (e) {
+      // Ignore
+    }
+  }
 }
+
+// Mock HTTP classes for NetworkImage
+class TestHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return _MockHttpClient();
+  }
+}
+
+class _MockHttpClient implements HttpClient {
+  @override
+  bool autoUncompress = true;
+
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async {
+    return _MockHttpClientRequest();
+  }
+  
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError();
+  }
+}
+
+class _MockHttpClientRequest implements HttpClientRequest {
+  @override
+  final HttpHeaders headers = _MockHttpHeaders();
+
+  @override
+  Future<HttpClientResponse> close() async {
+    return _MockHttpClientResponse();
+  }
+  
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError();
+  }
+}
+
+class _MockHttpClientResponse implements HttpClientResponse {
+  @override
+  int get statusCode => 200;
+
+  @override
+  int get contentLength => kTransparentImage.length;
+  
+  @override
+  HttpClientResponseCompressionState get compressionState => HttpClientResponseCompressionState.notCompressed;
+
+  @override
+  StreamSubscription<List<int>> listen(void Function(List<int> event)? onData, {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+    return Stream<List<int>>.fromIterable([kTransparentImage]).listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  }
+  
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError();
+  }
+}
+
+class _MockHttpHeaders implements HttpHeaders {
+  @override
+  void add(String name, Object value, {bool preserveHeaderCase = false}) {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError();
+  }
+}
+
+const List<int> kTransparentImage = <int>[
+  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+  0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
+  0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
+  0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE,
+  0x42, 0x60, 0x82,
+];
