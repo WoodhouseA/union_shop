@@ -32,18 +32,20 @@ class CartService with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeFromCart(String productId) {
-    _items.removeWhere((item) => item.product.id == productId);
+  void removeFromCart(String productId, String? size) {
+    _items.removeWhere(
+        (item) => item.product.id == productId && item.size == size);
     notifyListeners();
   }
 
-  void updateQuantity(String productId, int quantity) {
-    final existingIndex = _items.indexWhere((item) => item.product.id == productId);
+  void updateQuantity(String productId, int quantity, String? size) {
+    final existingIndex = _items
+        .indexWhere((item) => item.product.id == productId && item.size == size);
     if (existingIndex != -1) {
       if (quantity > 0) {
         _items[existingIndex].quantity = quantity;
       } else {
-        removeFromCart(productId);
+        removeFromCart(productId, size);
       }
       notifyListeners();
     }
