@@ -30,4 +30,13 @@ class ProductService {
     final List<Product> allProducts = await _loadProducts();
     return allProducts.firstWhere((product) => product.id == productId);
   }
+
+  Future<List<Product>> searchProducts(String query) async {
+    if (query.isEmpty) return [];
+    final products = await _loadProducts();
+    final lowerQuery = query.toLowerCase();
+    return products.where((p) {
+      return p.name.toLowerCase().contains(lowerQuery);
+    }).toList();
+  }
 }
