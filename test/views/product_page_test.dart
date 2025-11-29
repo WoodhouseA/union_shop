@@ -113,6 +113,14 @@ void main() {
     
     // throw Exception('Timed out waiting for product to load');
   }
+
+  test('Verify JSON parsing', () {
+    final jsonStr = json.encode(mockProducts);
+    final List<dynamic> jsonResponse = json.decode(jsonStr);
+    final products = jsonResponse.map((data) => Product.fromJson(data)).toList();
+    expect(products.length, 1);
+    expect(products.first.id, 'prod-001');
+  });
 }
 
 // Mock HTTP classes for NetworkImage
