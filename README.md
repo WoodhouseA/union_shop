@@ -11,6 +11,8 @@ A Flutter-based e-commerce application for the University of Portsmouth Union Sh
 *   **Simulated Checkout:** A demonstration of the checkout process.
 *   **Responsive Design:** The application is designed to work seamlessly on both mobile and desktop web/native platforms.
 *   **Sale Section:** Dedicated view for discounted items.
+*   **Authentication UI:** Interactive Login and Sign Up forms.
+*   **Print Shack Information:** Detailed service information, pricing, and terms for the Print Shack.
 
 ## Installation and Setup
 
@@ -60,6 +62,11 @@ A Flutter-based e-commerce application for the University of Portsmouth Union Sh
     *   Review your items, including any custom text/color details.
     *   Adjust quantities or remove items.
     *   Proceed to checkout (simulated).
+5.  **Authentication:**
+    *   Access the login/signup page via the "Login" button in the navigation bar.
+    *   Toggle between Login and Sign Up forms.
+6.  **Print Shack Info:**
+    *   View detailed information about the Print Shack service via the "About Print Shack" link.
 
 ### Running Tests
 
@@ -78,8 +85,8 @@ The project follows a standard Flutter feature-based architecture:
     *   **`router.dart`**: Configuration for application routing using `go_router`.
     *   **`models/`**: Data models (e.g., `Product`, `CartItem`).
     *   **`services/`**: Business logic and data fetching (e.g., `CartService`, `ProductService`).
-    *   **`views/`**: Screen widgets (e.g., `HomeScreen`, `ProductPage`, `CartPage`).
-    *   **`widgets/`**: Reusable UI components (e.g., `ProductCard`, `Footer`, `AppBar`).
+    *   **`views/`**: Screen widgets (e.g., `HomeScreen`, `ProductPage`, `CartPage`, `AuthPage`, `PrintShackPage`, `PrintShackAboutPage`, `SaleCollectionPage`).
+    *   **`widgets/`**: Reusable UI components (e.g., `ProductCard`, `Footer`, `AppBar`, `LoginForm`, `SignupForm`).
 *   **`assets/`**: Contains static assets like images and JSON data files (`products.json`, `collections.json`).
 *   **`test/`**: Contains unit and widget tests.
 
