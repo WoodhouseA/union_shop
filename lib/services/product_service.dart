@@ -3,9 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:union_shop/models/product_model.dart';
 
 class ProductService {
-  Future<List<Product>> _loadProducts() async {
+  Future<List<Product>> _loadProducts([AssetBundle? bundle]) async {
+    final b = bundle ?? rootBundle;
     final String jsonString =
-        await rootBundle.loadString('assets/products.json');
+        await b.loadString('assets/products.json');
     final List<dynamic> jsonResponse = json.decode(jsonString);
     return jsonResponse.map((data) => Product.fromJson(data)).toList();
   }
@@ -31,9 +32,9 @@ class ProductService {
     return allProducts.firstWhere((product) => product.id == productId);
   }
 
-  Future<List<Product>> searchProducts(String query) async {
+  Future<List<Product>> searchProducts(String query, {AssetBundle? bundle}) async {
     if (query.isEmpty) return [];
-    final products = await _loadProducts();
+    final products = await _loadProducts(bundle);
     final lowerQuery = query.toLowerCase();
     return products.where((p) {
       return p.name.toLowerCase().contains(lowerQuery);
