@@ -94,10 +94,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              AppBarButton(
-                                icon: Icons.search,
-                                onPressed: placeholderCallbackForButtons,
-                              ),
+                              const _SearchField(),
                               AppBarButton(
                                 icon: Icons.person_outline,
                                 onPressed: () {
@@ -190,6 +187,57 @@ class AppBarButton extends StatelessWidget {
         minHeight: 32,
       ),
       onPressed: onPressed,
+    );
+  }
+}
+
+class _SearchField extends StatefulWidget {
+  const _SearchField();
+
+  @override
+  State<_SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<_SearchField> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _submitSearch(String value) {
+    if (value.isNotEmpty) {
+      context.go(Uri(path: '/search', queryParameters: {'q': value}).toString());
+      _controller.clear();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 40,
+      margin: const EdgeInsets.only(right: 8),
+      child: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          hintText: 'Search...',
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.grey[200],
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.search, size: 20),
+            onPressed: () => _submitSearch(_controller.text),
+          ),
+        ),
+        onSubmitted: _submitSearch,
+      ),
     );
   }
 }
