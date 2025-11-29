@@ -119,15 +119,25 @@ class _CollectionCardState extends State<_CollectionCard> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(
-                  widget.collection['image']!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Center(
-                      child: Icon(Icons.image_not_supported, size: 50),
-                    );
-                  },
-                ),
+                widget.collection['image']!.startsWith('http')
+                    ? Image.network(
+                        widget.collection['image']!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                            child: Icon(Icons.image_not_supported, size: 50),
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        widget.collection['image']!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                            child: Icon(Icons.image_not_supported, size: 50),
+                          );
+                        },
+                      ),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
