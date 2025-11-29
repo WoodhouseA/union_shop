@@ -22,6 +22,7 @@ import 'package:union_shop/views/collection_page.dart';
 import 'package:union_shop/views/print_shack_about_page.dart';
 import 'package:union_shop/views/print_shack_page.dart';
 import 'package:union_shop/views/product_page.dart';
+import 'package:union_shop/views/search_results_page.dart';
 
 // --- Mock HttpOverrides for NetworkImage ---
 
@@ -300,5 +301,14 @@ void main() {
 
     expect(find.byType(ProductPage), findsOneWidget);
     expect(find.text('Test Product 1'), findsOneWidget);
+  });
+
+  testWidgets('Router navigates to Search Results', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestApp());
+    testRouter.go('/search?q=apple');
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byType(SearchResultsPage), findsOneWidget);
   });
 }
