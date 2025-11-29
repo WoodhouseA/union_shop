@@ -50,6 +50,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final isDesktop = constraints.maxWidth > 900;
+                    final showSearchField = constraints.maxWidth > 600;
                     return Row(
                       children: [
                         GestureDetector(
@@ -94,7 +95,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const _SearchField(),
+                              if (showSearchField)
+                                const _SearchField()
+                              else
+                                AppBarButton(
+                                  icon: Icons.search,
+                                  onPressed: () => context.go('/search'),
+                                ),
                               AppBarButton(
                                 icon: Icons.person_outline,
                                 onPressed: () {
