@@ -82,4 +82,22 @@ void main() {
 
     expect(find.byIcon(Icons.error), findsOneWidget);
   });
+
+  testWidgets('ProductCard displays local asset image', (WidgetTester tester) async {
+    final product = Product(
+      id: '3',
+      collectionId: 'col1',
+      name: 'Local Product',
+      price: 10.0,
+      onSale: false,
+      imageUrl: 'assets/images/test.png',
+      sizes: [],
+      colors: [],
+    );
+
+    await tester.pumpWidget(createTestWidget(product));
+
+    expect(find.text('Local Product'), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
+  });
 }
