@@ -1,10 +1,65 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:union_shop/models/cart_model.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/widgets/app_bar.dart';
+
+class TestHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return _MockHttpClient();
+  }
+}
+
+class _MockHttpClient extends Fake implements HttpClient {
+  @override
+  bool autoUncompress = false;
+
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async {
+    return _MockHttpClientRequest();
+  }
+}
+
+class _MockHttpClientRequest extends Fake implements HttpClientRequest {
+  @override
+  HttpHeaders get headers => _MockHttpHeaders();
+
+  @override
+  Future<HttpClientResponse> close() async {
+    return _MockHttpClientResponse();
+  }
+}
+
+class _MockHttpHeaders extends Fake implements HttpHeaders {
+  @override
+  void set(String name, Object value, {bool preserveHeaderCase = false}) {}
+}
+
+class _MockHttpClientResponse extends Fake implements HttpClientResponse {
+  @override
+  int get statusCode => 404;
+
+  @override
+  int get contentLength => 0;
+
+  @override
+  HttpClientResponseCompressionState get compressionState =>
+      HttpClientResponseCompressionState.notCompressed;
+
+  @override
+  StreamSubscription<List<int>> listen(void Function(List<int> event)? onData,
+      {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+    return const Stream<List<int>>.empty().listen(onData,
+        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  }
+}
 
 class MockCartService extends ChangeNotifier implements CartService {
   @override
@@ -40,15 +95,65 @@ void main() {
 
   setUp(() {
     mockCartService = MockCartService();
+    HttpOverrides.global = TestHttpOverrides();
+  });
+
+  tearDown(() {
+    HttpOverrides.global = null;
   });
 
   Widget createTestWidget({required Widget child}) {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => Scaffold(
+            appBar: child as PreferredSizeWidget,
+            body: Container(),
+          ),
+        ),
+        GoRoute(
+          path: '/search',
+          builder: (context, state) => Scaffold(
+            body: Text('Search Page: ${state.uri.queryParameters['q'] ?? ''}'),
+          ),
+        ),
+        GoRoute(
+          path: '/auth',
+          builder: (context, state) => const Scaffold(body: Text('Auth Page')),
+        ),
+        GoRoute(
+          path: '/cart',
+          builder: (context, state) => const Scaffold(body: Text('Cart Page')),
+        ),
+        GoRoute(
+          path: '/about',
+          builder: (context, state) => const Scaffold(body: Text('About Page')),
+        ),
+        GoRoute(
+          path: '/collections',
+          builder: (context, state) => const Scaffold(body: Text('Collections Page')),
+        ),
+        GoRoute(
+          path: '/sale',
+          builder: (context, state) => const Scaffold(body: Text('Sale Page')),
+        ),
+        GoRoute(
+          path: '/print-shack',
+          builder: (context, state) => const Scaffold(body: Text('Print Shack Page')),
+        ),
+        GoRoute(
+          path: '/print-shack-about',
+          builder: (context, state) => const Scaffold(body: Text('Print Shack About Page')),
+        ),
+      ],
+    );
+
     return ChangeNotifierProvider<CartService>.value(
       value: mockCartService,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: child as PreferredSizeWidget,
-        ),
+      child: MaterialApp.router(
+        routerConfig: router,
       ),
     );
   }
@@ -134,6 +239,67 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.menu));
     expect(menuPressed, isTrue);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Search field is visible on desktop', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.byType(TextField), findsOneWidget);
+    
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Search field is hidden on mobile', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.byType(TextField), findsNothing);
+    // Should find the search icon button instead
+    expect(find.widgetWithIcon(IconButton, Icons.search), findsOneWidget);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Submitting search navigates to search page with query', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.enterText(find.byType(TextField), 'hoodie');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Search Page: hoodie'), findsOneWidget);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Tapping search icon on mobile navigates to search page', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.search));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Search Page: '), findsOneWidget);
 
     addTearDown(tester.view.resetPhysicalSize);
   });
