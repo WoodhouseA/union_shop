@@ -142,5 +142,35 @@
         "imageUrl": "assets/images/merchandise/essential_stationary_set.png",
         "sizes": ["regular", "large"],
         "colors": []
+    },
+    {
+        "id": "prod-015",
+        "collectionId": "graduation",
+        "name": "Class of 2025 Hoodie",
+        "price": 34.99,
+        "onSale": false,
+        "imageUrl": "assets/images/graduation/graduation_hoodie.png",
+        "sizes": ["S", "M", "L", "XL", "XXL"],
+        "colors": ["Purple", "Grey", "Navy"]
+    },
+    {
+        "id": "prod-016",
+        "collectionId": "graduation",
+        "name": "Graduation Bear",
+        "price": 19.99,
+        "onSale": false,
+        "imageUrl": "assets/images/graduation/graduation_bear.png",
+        "sizes": [],
+        "colors": ["Brown", "White", "Black"]
+    },
+    {
+        "id": "prod-017",
+        "collectionId": "graduation",
+        "name": "Certificate Frame",
+        "price": 24.99,
+        "onSale": false,
+        "imageUrl": "assets/images/graduation/certificate_frame.png",
+        "sizes": [],
+        "colors": ["Gold", "Silver", "Wood"]
     }
 ]

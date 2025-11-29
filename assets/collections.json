@@ -28,5 +28,10 @@
         "id": "merchandise",
         "name": "Merchandise",
         "image": "assets/images/merchandise/union_lanyard.png"
+    },
+    {
+        "id": "graduation",
+        "name": "Graduation",
+        "image": "assets/images/graduation/graduation_bear.png"
     }
 ]
