@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -90,7 +91,7 @@ class Footer extends StatelessWidget {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        _buildFooterLink('Search', () {}),
+        _FooterSearchField(),
         const SizedBox(height: 8),
         _buildFooterLink('Terms & Conditions of Sale Policy', () {}),
       ],
@@ -151,6 +152,53 @@ class Footer extends StatelessWidget {
           color: Colors.black,
           decoration: TextDecoration.underline,
         ),
+      ),
+    );
+  }
+}
+
+class _FooterSearchField extends StatefulWidget {
+  @override
+  State<_FooterSearchField> createState() => _FooterSearchFieldState();
+}
+
+class _FooterSearchFieldState extends State<_FooterSearchField> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _submitSearch(String value) {
+    if (value.isNotEmpty) {
+      context.go(Uri(path: '/search', queryParameters: {'q': value}).toString());
+      _controller.clear();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          hintText: 'Search products...',
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.search, size: 20),
+            onPressed: () => _submitSearch(_controller.text),
+          ),
+        ),
+        onSubmitted: _submitSearch,
       ),
     );
   }
