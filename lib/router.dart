@@ -10,6 +10,7 @@ import 'package:union_shop/views/print_shack_about_page.dart';
 import 'package:union_shop/views/print_shack_page.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/sale_collection_page.dart';
+import 'package:union_shop/views/search_results_page.dart';
 import 'package:union_shop/widgets/page_wrapper.dart';
 
 final GoRouter router = GoRouter(
@@ -84,6 +85,13 @@ final GoRouter router = GoRouter(
           path: 'print-shack-about',
           builder: (BuildContext context, GoRouterState state) {
             return const PageWrapper(child: PrintShackAboutPage());
+          },
+        ),
+        GoRoute(
+          path: 'search',
+          builder: (BuildContext context, GoRouterState state) {
+            final query = state.uri.queryParameters['q'] ?? '';
+            return PageWrapper(child: SearchResultsPage(initialQuery: query));
           },
         ),
       ],
