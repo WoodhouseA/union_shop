@@ -220,10 +220,10 @@ This checklist breaks down the development of the Union Shop Flutter application
 
 ### 3. Search System (4%)
 
--   [ ] **Add a search bar (`TextField` or `SearchBar` widget) to the `NavBar` and `Footer`.**
--   [ ] **Create `search_results_page.dart`.**
+-   [x] **Add a search bar (`TextField` or `SearchBar` widget) to the `NavBar` and `Footer`.**
+-   [x] **Create `search_results_page.dart`.**
 -   [ ] **Implement search functionality in the `ProductService`:**
     *   **Method:** `Future<List<Product>> searchProducts(String query)`
--   [ ] **When the user submits a search, navigate to the `SearchResultsPage` and display the results.**
+-   [x] **When the user submits a search, navigate to the `SearchResultsPage` and display the results.**
     *   **UI:** Use a `FutureBuilder` to show a loading state and then the list of matching products.
     *   **Bonus:** Implement a live search that updates results as the user types.
