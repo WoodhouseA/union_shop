@@ -76,4 +76,26 @@ void main() {
     final product = await productService.getProductById('1');
     expect(product.name, 'Product 1');
   });
+
+  test('searchProducts returns matching products', () async {
+    final products = await productService.searchProducts('Product 1');
+    expect(products.length, 1);
+    expect(products[0].name, 'Product 1');
+  });
+
+  test('searchProducts is case insensitive', () async {
+    final products = await productService.searchProducts('product 1');
+    expect(products.length, 1);
+    expect(products[0].name, 'Product 1');
+  });
+
+  test('searchProducts returns empty list for empty query', () async {
+    final products = await productService.searchProducts('');
+    expect(products.isEmpty, true);
+  });
+
+  test('searchProducts returns empty list for no match', () async {
+    final products = await productService.searchProducts('Nonexistent');
+    expect(products.isEmpty, true);
+  });
 }
