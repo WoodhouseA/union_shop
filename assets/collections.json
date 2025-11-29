@@ -23,5 +23,10 @@
         "id": "bears",
         "name": "Bear Collection",
         "image": "assets/images/bears/brown_bear.png"
+    },
+    {
+        "id": "merchandise",
+        "name": "Merchandise",
+        "image": "assets'/images/merchandise/union_lanyard.png"
     }
 ]

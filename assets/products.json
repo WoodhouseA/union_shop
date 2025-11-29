@@ -90,6 +90,57 @@
         "imageUrl": "assets/images/bears/black_bear.png",
         "sizes": [],
         "colors": ["Black"]
+    },
+    {
+        "id": "prod-010",
+        "collectionId": "merchandise",
+        "name": "Metal Water Bottle",
+        "price": 12.99,
+        "onSale": false,
+        "imageUrl": "assets/images/merchandise/metal_water_bottle.png",
+        "sizes": [],
+        "colors": ["Silver", "Matte Black"]
+    },
+    {
+        "id": "prod-011",
+        "collectionId": "merchandise",
+        "name": "Union Lanyard",
+        "price": 1.99,
+        "onSale": false,
+        "imageUrl": "assets/images/merchandise/union_lanyard.png",
+        "sizes": [],
+        "colors": ["Purple", "Rainbow"]
+    },
+    {
+        "id": "prod-012",
+        "collectionId": "merchandise",
+        "name": "Eco Travel Cup",
+        "price": 8.99,
+        "onSale": true,
+        "salePrice": 6.99,
+        "imageUrl": "assets/images/merchandise/eco_travel_cup.png",
+        "sizes": [],
+        "colors": ["Purple", "Black"]
+    },
+    {
+        "id": "prod-013",
+        "collectionId": "merchandise",
+        "name": "Canvas Tote Bag",
+        "price": 4.99,
+        "onSale": false,
+        "imageUrl": "assets/images/merchandise/canvas_tote_bag.png",
+        "sizes": [],
+        "colors": ["Natural", "Black"]
+    },
+    {
+        "id": "prod-014",
+        "collectionId": "merchandise",
+        "name": "Essential Stationery Set",
+        "price": 12.99,
+        "onSale": true,
+        "salePrice": 7.99,
+        "imageUrl": "assets/images/merchandise/essential_stationery_set.png",
+        "sizes": ["regular", "large"],
+        "colors": []
     }
-
 ]
