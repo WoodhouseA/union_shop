@@ -2,22 +2,22 @@
     {
         "id": "summer",
         "name": "Summer Collection",
-        "image": "https://picsum.photos/seed/summer/400/300"
+        "image": "assets/images/summer/summer_collection.png"
     },
     {
         "id": "winter",
         "name": "Winter Collection",
-        "image": "https://picsum.photos/seed/winter/400/300"
+        "image": "assets/images/winter/winter_collection.png"
     },
     {
         "id": "spring",
         "name": "Spring Collection",
-        "image": "https://picsum.photos/seed/spring/400/300"
+        "image": "assets/images/spring/spring_collection.png"
     },
     {
         "id": "autumn",
         "name": "Autumn Collection",
-        "image": "https://picsum.photos/seed/autumn/400/300"
+        "image": "assets/images/autumn/autumn_collection.png"
     },
     {
         "id": "bears",

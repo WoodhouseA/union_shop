@@ -6,7 +6,7 @@
         "price": 19.99,
         "onSale": true,
         "salePrice": 14.99,
-        "imageUrl": "https://picsum.photos/seed/prod-001/400/300",
+        "imageUrl": "assets/images/summer/cool_summer_tshirt.png",
         "sizes": ["S", "M", "L", "XL"],
         "colors": ["Red", "Blue", "Green"]
     },
@@ -16,7 +16,7 @@
         "name": "Beach Shorts",
         "price": 29.99,
         "onSale": false,
-        "imageUrl": "https://picsum.photos/seed/prod-002/400/300",
+        "imageUrl": "assets/images/summer/beach_shorts.png",
         "sizes": ["S", "M", "L"],
         "colors": ["Black", "White"]
     },
@@ -27,7 +27,7 @@
         "price": 79.99,
         "onSale": true,
         "salePrice": 59.99,
-        "imageUrl": "https://picsum.photos/seed/prod-003/400/300",
+        "imageUrl": "assets/images/winter/warm_winter_jacket.png",
         "sizes": ["M", "L", "XL"],
         "colors": ["Gray", "Navy"]
     },
@@ -37,7 +37,7 @@
         "name": "Woolly Scarf",
         "price": 15.99,
         "onSale": false,
-        "imageUrl": "https://picsum.photos/seed/prod-004/400/300",
+        "imageUrl": "assets/images/winter/woolly_scarf.png",
         "sizes": [],
         "colors": ["Purple", "Yellow"]
     },
@@ -47,7 +47,7 @@
         "name": "Light Spring Jacket",
         "price": 49.99,
         "onSale": false,
-        "imageUrl": "https://picsum.photos/seed/prod-005/400/300",
+        "imageUrl": "assets/images/spring/light_spring_jacket.png",
         "sizes": ["S", "M", "L"],
         "colors": ["Pink", "Beige"]
     },
@@ -57,7 +57,7 @@
         "name": "Cosy Autumn Sweater",
         "price": 39.99,
         "onSale": false,
-        "imageUrl": "https://picsum.photos/seed/prod-006/400/300",
+        "imageUrl": "assets/images/autumn/cosy_autumn_sweater.png",
         "sizes": ["S", "M", "L", "XL"],
         "colors": ["Brown", "Orange"]
     },
@@ -172,5 +172,66 @@
         "imageUrl": "assets/images/graduation/certificate_frame.png",
         "sizes": [],
         "colors": ["Gold", "Silver", "Wood"]
+    },
+    {
+        "id": "prod-018",
+        "collectionId": "summer",
+        "name": "Summer Hat",
+        "price": 14.99,
+        "onSale": false,
+        "imageUrl": "assets/images/summer/summer_hat.png",
+        "sizes": ["One Size"],
+        "colors": ["Straw", "White"]
+    },
+    {
+        "id": "prod-019",
+        "collectionId": "winter",
+        "name": "Winter Gloves",
+        "price": 12.99,
+        "onSale": false,
+        "imageUrl": "assets/images/winter/winter_gloves.png",
+        "sizes": ["S", "M", "L"],
+        "colors": ["Black", "Gray"]
+    },
+    {
+        "id": "prod-020",
+        "collectionId": "spring",
+        "name": "Floral Dress",
+        "price": 39.99,
+        "onSale": true,
+        "salePrice": 29.99,
+        "imageUrl": "assets/images/spring/floral_dress.png",
+        "sizes": ["XS", "S", "M", "L"],
+        "colors": ["Floral Print"]
+    },
+    {
+        "id": "prod-021",
+        "collectionId": "spring",
+        "name": "Rain Boots",
+        "price": 24.99,
+        "onSale": false,
+        "imageUrl": "assets/images/spring/rain_boots.png",
+        "sizes": ["36", "37", "38", "39", "40"],
+        "colors": ["Yellow", "Red"]
+    },
+    {
+        "id": "prod-022",
+        "collectionId": "autumn",
+        "name": "Beanie Hat",
+        "price": 9.99,
+        "onSale": false,
+        "imageUrl": "assets/images/autumn/beanie_hat.png",
+        "sizes": ["One Size"],
+        "colors": ["Mustard", "Burgundy"]
+    },
+    {
+        "id": "prod-023",
+        "collectionId": "autumn",
+        "name": "Corduroy Pants",
+        "price": 44.99,
+        "onSale": false,
+        "imageUrl": "assets/images/autumn/corduroy_pants.png",
+        "sizes": ["30", "32", "34", "36"],
+        "colors": ["Brown", "Navy"]
     }
 ]
