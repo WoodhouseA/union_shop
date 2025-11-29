@@ -102,4 +102,20 @@ void main() {
 
     expect(find.text('Collection col1'), findsOneWidget);
   });
+
+  testWidgets('shows local asset collection image', (WidgetTester tester) async {
+    final localCollections = [
+      {
+        'id': 'col3',
+        'name': 'Local Collection',
+        'image': 'assets/images/test.png',
+      },
+    ];
+    final mockService = MockCollectionService(mockCollections: localCollections);
+    await tester.pumpWidget(createWidgetUnderTest(mockService));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Local Collection'), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
+  });
 }
