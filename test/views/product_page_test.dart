@@ -121,6 +121,22 @@ void main() {
     expect(products.length, 1);
     expect(products.first.id, 'prod-001');
   });
+
+  test('Verify ProductService logic with mock bundle', () async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMessageHandler('flutter/assets', (ByteData? message) async {
+      final String key = utf8.decode(message!.buffer.asUint8List());
+      if (key == 'assets/products.json') {
+        final Uint8List encoded = utf8.encode(json.encode(mockProducts));
+        return ByteData.view(encoded.buffer);
+      }
+      return null;
+    });
+
+    final service = ProductService();
+    final product = await service.getProductById('prod-001');
+    expect(product.id, 'prod-001');
+  });
 }
 
 // Mock HTTP classes for NetworkImage
