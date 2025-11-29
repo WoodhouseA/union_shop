@@ -54,11 +54,9 @@ void main() {
       (ByteData? message) async {
         if (message == null) return null;
         final key = utf8.decode(message.buffer.asUint8List(message.offsetInBytes, message.lengthInBytes));
-        debugPrint('MockAssets: Requested $key');
         
         if (key == 'assets/products.json') {
           final String jsonStr = json.encode(mockProducts);
-          debugPrint('MockAssets: Returning $jsonStr');
           final Uint8List encoded = utf8.encode(jsonStr);
           return ByteData.view(encoded.buffer);
         }
@@ -89,31 +87,6 @@ void main() {
     );
   }
 
-  Future<void> waitForLoad(WidgetTester tester) async {
-    // Pump once to start the future
-    await tester.pump();
-    
-    // Pump loop to wait for completion
-    for (int i = 0; i < 100; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
-      if (find.byType(CircularProgressIndicator).evaluate().isEmpty) {
-        return;
-      }
-    }
-    // If we are here, it timed out.
-    // Try one last pumpAndSettle just in case
-    try {
-      await tester.pumpAndSettle(const Duration(milliseconds: 100), EnginePhase.sendSemanticsUpdate, const Duration(seconds: 2));
-      if (find.byType(CircularProgressIndicator).evaluate().isEmpty) {
-        return;
-      }
-    } catch (e) {
-      // Ignore timeout from pumpAndSettle
-    }
-    
-    // throw Exception('Timed out waiting for product to load');
-  }
-
   test('Verify JSON parsing', () {
     final jsonStr = json.encode(mockProducts);
     final List<dynamic> jsonResponse = json.decode(jsonStr);
@@ -136,6 +109,78 @@ void main() {
     final service = ProductService();
     final product = await service.getProductById('prod-001');
     expect(product.id, 'prod-001');
+  });
+
+  testWidgets('ProductPage tests', (WidgetTester tester) async {
+    final mockCartService = MockCartService();
+
+    // Clear cache to ensure widget triggers a new load
+    rootBundle.evict('assets/products.json');
+
+    // --- Test 1: Load details ---
+    await tester.pumpWidget(createWidgetUnderTest('prod-001', mockCartService));
+    await tester.pumpAndSettle();
+
+    // Check name
+    expect(find.text('Cool Summer T-Shirt'), findsOneWidget);
+    
+    // Check prices (Sale)
+    expect(find.textContaining('19.99'), findsOneWidget); // Original
+    expect(find.textContaining('14.99'), findsOneWidget); // Sale
+      
+    // Check dropdowns exist
+    expect(find.text('Size'), findsOneWidget);
+    expect(find.text('Color'), findsOneWidget);
+    
+    // Check initial selection (S and Red based on JSON order)
+    expect(find.text('S'), findsOneWidget);
+    expect(find.text('Red'), findsOneWidget);
+
+    // --- Test 2: Add to cart ---
+    // Ensure Add button is visible
+    final addButton = find.byIcon(Icons.add);
+    await tester.ensureVisible(addButton);
+    await tester.pumpAndSettle();
+
+    // Change Quantity to 2
+    await tester.tap(addButton);
+    await tester.pump();
+    expect(find.text('2'), findsOneWidget);
+
+    // Change Size to M
+    final sizeDropdown = find.text('S');
+    await tester.ensureVisible(sizeDropdown);
+    await tester.tap(sizeDropdown); // Open dropdown
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('M').last); // Select M
+    await tester.pumpAndSettle();
+
+    // Change Color to Blue
+    final colorDropdown = find.text('Red');
+    await tester.ensureVisible(colorDropdown);
+    await tester.tap(colorDropdown); // Open dropdown
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Blue').last); // Select Blue
+    await tester.pumpAndSettle();
+
+    // Add to Cart
+    final addToCartButton = find.text('ADD TO CART');
+    await tester.ensureVisible(addToCartButton);
+    await tester.tap(addToCartButton);
+    await tester.pump();
+
+    // Verify
+    expect(find.text('Added 2 Cool Summer T-Shirt(s) to cart'), findsOneWidget);
+    expect(mockCartService.lastAddedProduct!.id, 'prod-001');
+    expect(mockCartService.totalQuantityAdded, 2);
+    expect(mockCartService.lastSize, 'M');
+    expect(mockCartService.lastColor, 'Blue');
+
+    // --- Test 3: Invalid product ---
+    await tester.pumpWidget(createWidgetUnderTest('invalid-id', mockCartService));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Error'), findsOneWidget);
   });
 }
 
