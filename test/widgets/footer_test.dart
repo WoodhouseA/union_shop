@@ -33,15 +33,23 @@ void main() {
   testWidgets('Footer displays help links', (WidgetTester tester) async {
     await tester.pumpWidget(createTestWidget());
 
-    expect(find.text('Search'), findsOneWidget);
+    expect(
+        find.byWidgetPredicate((widget) =>
+            widget is TextField &&
+            widget.decoration?.hintText == 'Search products...'),
+        findsOneWidget);
     expect(find.text('Terms & Conditions of Sale Policy'), findsOneWidget);
   });
 
   testWidgets('Footer displays newsletter signup', (WidgetTester tester) async {
     await tester.pumpWidget(createTestWidget());
 
-    expect(find.byType(TextField), findsOneWidget);
-    expect(find.text('Email address'), findsOneWidget);
+    expect(find.byType(TextField), findsNWidgets(2));
+    expect(
+        find.byWidgetPredicate((widget) =>
+            widget is TextField &&
+            widget.decoration?.hintText == 'Email address'),
+        findsOneWidget);
     expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
   });
 
