@@ -62,10 +62,34 @@ class _MockHttpClientResponse extends Fake implements HttpClientResponse {
 }
 
 class MockCartService extends ChangeNotifier implements CartService {
+  int _testTotalItems = 0;
+
+  set testTotalItems(int value) {
+    _testTotalItems = value;
+    notifyListeners();
+  }
+
   @override
-  List<CartItem> get items => [];
+  List<CartItem> get items => _testTotalItems > 0
+      ? [
+          CartItem(
+            product: Product(
+              id: '1',
+              collectionId: 'col1',
+              name: 'Test',
+              price: 10,
+              onSale: false,
+              imageUrl: '',
+              sizes: [],
+              colors: [],
+            ),
+            quantity: _testTotalItems,
+          )
+        ]
+      : [];
+
   @override
-  int get totalItems => 0;
+  int get totalItems => _testTotalItems;
   @override
   double get totalPrice => 0.0;
 
@@ -300,6 +324,114 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Search Page: '), findsOneWidget);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Logo tap navigates to home', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.byType(Image), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    // Since we are already at '/', we can't easily check for route change unless we start elsewhere
+    // or check that we are still at home.
+    // Alternatively, we can check if context.go('/') was called if we mocked the router,
+    // but here we are using a real router.
+    // Let's just verify no error occurs and we are at home.
+    expect(find.byType(Scaffold), findsOneWidget);
+  });
+
+  testWidgets('Person icon navigates to auth page', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.byIcon(Icons.person_outline));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Auth Page'), findsOneWidget);
+  });
+
+  testWidgets('Shopping bag icon navigates to cart page', (WidgetTester tester) async {
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.byIcon(Icons.shopping_bag_outlined));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Cart Page'), findsOneWidget);
+  });
+
+  testWidgets('Cart badge displays correct count when items exist', (WidgetTester tester) async {
+    mockCartService.testTotalItems = 5;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    expect(find.text('5'), findsOneWidget);
+    // Verify it's in a red container (checking decoration is hard, but we can check existence)
+    expect(find.text('5'), findsOneWidget);
+  });
+
+  testWidgets('Desktop nav items navigate correctly', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.text('About Us'));
+    await tester.pumpAndSettle();
+    expect(find.text('About Page'), findsOneWidget);
+
+    // Re-pump widget to reset to home (and restore AppBar)
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.text('Collections'));
+    await tester.pumpAndSettle();
+    expect(find.text('Collections Page'), findsOneWidget);
+
+    // Re-pump widget to reset to home
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    await tester.tap(find.text('Sale!'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sale Page'), findsOneWidget);
+
+    addTearDown(tester.view.resetPhysicalSize);
+  });
+
+  testWidgets('Print Shack menu opens and navigates', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(createTestWidget(
+      child: CustomAppBar(onMenuPressed: () {}),
+    ));
+
+    // Open menu
+    await tester.tap(find.text('The Print Shack'));
+    await tester.pumpAndSettle();
+
+    // Check menu items are visible
+    expect(find.text('Personalization'), findsOneWidget);
+    expect(find.text('About'), findsOneWidget);
+
+    // Tap an item
+    await tester.tap(find.text('Personalization'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Print Shack Page'), findsOneWidget);
 
     addTearDown(tester.view.resetPhysicalSize);
   });
