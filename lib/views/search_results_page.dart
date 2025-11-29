@@ -20,14 +20,23 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   List<Product> _searchResults = [];
   bool _isLoading = false;
   String _searchQuery = '';
+  bool _initialSearchDone = false;
+  late AssetBundle _bundle;
 
   @override
   void initState() {
     super.initState();
     _searchController.text = widget.initialQuery;
     _searchQuery = widget.initialQuery;
-    if (_searchQuery.isNotEmpty) {
-      _performSearch(_searchQuery);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bundle = DefaultAssetBundle.of(context);
+    if (!_initialSearchDone && widget.initialQuery.isNotEmpty) {
+      _initialSearchDone = true;
+      _performSearch(widget.initialQuery);
     }
   }
 
@@ -61,7 +70,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     });
 
     try {
-      final results = await _productService.searchProducts(query);
+      final results = await _productService.searchProducts(
+        query,
+        bundle: _bundle,
+      );
       setState(() {
         _searchResults = results;
         _isLoading = false;
