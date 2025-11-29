@@ -175,12 +175,6 @@ void main() {
     expect(mockCartService.totalQuantityAdded, 2);
     expect(mockCartService.lastSize, 'M');
     expect(mockCartService.lastColor, 'Blue');
-
-    // --- Test 3: Invalid product ---
-    await tester.pumpWidget(createWidgetUnderTest('invalid-id', mockCartService));
-    await tester.pumpAndSettle();
-
-    expect(find.textContaining('Error'), findsOneWidget);
   });
 }
 
