@@ -26,3 +26,5 @@ flutter:
     - assets/products.json
     - assets/collections.json
     - assets/
+    - assets/images/bears/
+    - assets/images/merchandise/
