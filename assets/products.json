@@ -139,7 +139,7 @@
         "price": 12.99,
         "onSale": true,
         "salePrice": 7.99,
-        "imageUrl": "assets/images/merchandise/essential_stationery_set.png",
+        "imageUrl": "assets/images/merchandise/essential_stationary_set.png",
         "sizes": ["regular", "large"],
         "colors": []
     }
