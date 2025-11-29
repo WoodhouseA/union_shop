@@ -60,5 +60,36 @@
         "imageUrl": "https://picsum.photos/seed/prod-006/400/300",
         "sizes": ["S", "M", "L", "XL"],
         "colors": ["Brown", "Orange"]
+    },
+    {
+        "id": "prod-007",
+        "collectionId": "bears",
+        "name": "Brown Bear Plush",
+        "price": 24.99,
+        "onSale": false,
+        "imageUrl": "assets/images/bears/brown_bear.png",
+        "sizes": [],
+        "colors": ["Brown"]
+    },
+    {
+        "id": "prod-008",
+        "collectionId": "bears",
+        "name": "White Bear Plush",
+        "price": 26.99,
+        "onSale": false,
+        "imageUrl": "assets/images/bears/white_bear.png",
+        "sizes": [],
+        "colors": ["White"]
+    },
+    {
+        "id": "prod-009",
+        "collectionId": "bears",
+        "name": "Black Bear Plush",
+        "price": 22.99,
+        "onSale": false,
+        "imageUrl": "assets/images/bears/black_bear.png",
+        "sizes": [],
+        "colors": ["Black"]
     }
+
 ]

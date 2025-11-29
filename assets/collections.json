@@ -18,5 +18,10 @@
         "id": "autumn",
         "name": "Autumn Collection",
         "image": "https://picsum.photos/seed/autumn/400/300"
+    },
+    {
+        "id": "bears",
+        "name": "Bear Collection",
+        "image": "assets/images/bears/brown_bear.png"
     }
 ]
