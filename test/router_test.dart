@@ -13,6 +13,8 @@ import 'package:union_shop/models/cart_model.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/router.dart';
 import 'package:union_shop/services/cart_service.dart';
+import 'package:union_shop/services/order_service.dart';
+import 'package:union_shop/models/order_model.dart';
 import 'package:union_shop/views/about_us_page.dart';
 import 'package:union_shop/views/cart_page.dart';
 import 'package:union_shop/views/collections_page.dart';
@@ -139,6 +141,18 @@ class MockCartService extends ChangeNotifier implements CartService {
       {String? customText, String? customColorName}) {}
 }
 
+// --- Mock OrderService ---
+
+class MockOrderService extends ChangeNotifier implements OrderService {
+  @override
+  Future<void> placeOrder(String userId, List<CartItem> items, double totalPrice) async {}
+
+  @override
+  Stream<List<OrderModel>> getUserOrders(String userId) {
+    return Stream.value([]);
+  }
+}
+
 // --- Mock AuthService ---
 
 class MockAuthService extends ChangeNotifier implements AuthService {
@@ -165,6 +179,7 @@ class MockAuthService extends ChangeNotifier implements AuthService {
 void main() {
   late MockCartService mockCartService;
   late MockAuthService mockAuthService;
+  late MockOrderService mockOrderService;
   late GoRouter testRouter;
 
   // Sample product data for mocking assets/products.json
@@ -193,6 +208,7 @@ void main() {
   setUp(() {
     mockCartService = MockCartService();
     mockAuthService = MockAuthService();
+    mockOrderService = MockOrderService();
     HttpOverrides.global = TestHttpOverrides();
     
     testRouter = createRouter(mockAuthService);
@@ -224,6 +240,7 @@ void main() {
       providers: [
         ChangeNotifierProvider<CartService>.value(value: mockCartService),
         ChangeNotifierProvider<AuthService>.value(value: mockAuthService),
+        ChangeNotifierProvider<OrderService>.value(value: mockOrderService),
       ],
       child: MaterialApp.router(
         routerConfig: testRouter,
