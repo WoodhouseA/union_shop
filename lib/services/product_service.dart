@@ -11,24 +11,24 @@ class ProductService {
     return jsonResponse.map((data) => Product.fromJson(data)).toList();
   }
 
-  Future<List<Product>> getProductsByCollection(String collectionId) async {
-    final List<Product> allProducts = await _loadProducts();
+  Future<List<Product>> getProductsByCollection(String collectionId, {AssetBundle? bundle}) async {
+    final List<Product> allProducts = await _loadProducts(bundle);
     return allProducts
         .where((product) => product.collectionId == collectionId)
         .toList();
   }
 
-  Future<List<Product>> getSaleProducts() async {
-    final products = await _loadProducts();
+  Future<List<Product>> getSaleProducts({AssetBundle? bundle}) async {
+    final products = await _loadProducts(bundle);
     return products.where((p) => p.onSale).toList();
   }
 
-  Future<List<Product>> getAllProducts() async {
-    return await _loadProducts();
+  Future<List<Product>> getAllProducts({AssetBundle? bundle}) async {
+    return await _loadProducts(bundle);
   }
 
-  Future<Product> getProductById(String productId) async {
-    final List<Product> allProducts = await _loadProducts();
+  Future<Product> getProductById(String productId, {AssetBundle? bundle}) async {
+    final List<Product> allProducts = await _loadProducts(bundle);
     return allProducts.firstWhere((product) => product.id == productId);
   }
 
