@@ -198,15 +198,15 @@ This checklist breaks down the development of the Union Shop Flutter application
 
 ### 1. Authentication System (8%)
 
--   [ ] **Choose an authentication provider (e.g., Firebase Authentication, Auth0).**
--   [ ] **Create an `AuthService` (`auth_service.dart`):**
+-   [x] **Choose an authentication provider (e.g., Firebase Authentication, Auth0).**
+-   [x] **Create an `AuthService` (`auth_service.dart`):**
     *   **Methods:** `Future<User?> signUp(String email, String password)`, `Future<User?> signIn(String email, String password)`, `Future<void> signOut()`, `Stream<User?> get authStateChanges`.
--   [ ] **Integrate the `AuthService` with the `AuthPage` forms.**
--   [ ] **Implement a stream-based approach in `main.dart` to show the `HomePage` or `AuthPage` based on the user's authentication state.**
--   [ ] **Create an `account_dashboard_page.dart`:**
+-   [x] **Integrate the `AuthService` with the `AuthPage` forms.**
+-   [x] **Implement a stream-based approach in `main.dart` to show the `HomePage` or `AuthPage` based on the user's authentication state.**
+-   [x] **Create an `account_dashboard_page.dart`:**
     *   **UI:** Display user information (email, name), order history, and saved addresses.
     *   **Functionality:** Allow users to update their profile and password.
--   [ ] **Protect routes that require authentication using the router.**
+-   [x] **Protect routes that require authentication using the router.**
 
 ### 2. Cart Management (6%)
 
