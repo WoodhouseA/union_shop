@@ -304,5 +304,68 @@ void main() {
     expect(find.text('Please login to checkout.'), findsOneWidget);
     expect(find.text('Auth Page'), findsOneWidget);
   });
+
+  testWidgets('CartPage places order if logged in', (WidgetTester tester) async {
+    final cartService = CartService();
+    final authService = MockAuthService();
+    final orderService = MockOrderService();
+    
+    authService.setUser(FakeUser(uid: 'user1', email: 'test@test.com'));
+
+    final product = Product(
+      id: '1',
+      collectionId: 'col1',
+      name: 'Test Product',
+      price: 20.0,
+      onSale: false,
+      imageUrl: 'https://example.com/image.jpg',
+      sizes: ['M'],
+      colors: ['Red'],
+    );
+
+    cartService.addToCart(product, size: 'M', color: 'Red');
+
+    // Use GoRouter for this test
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: CartPage()),
+        ),
+        GoRoute(
+          path: '/account',
+          builder: (context, state) => const Scaffold(body: Text('Account Page')),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CartService>.value(value: cartService),
+          ChangeNotifierProvider<AuthService>.value(value: authService),
+          ChangeNotifierProvider<OrderService>.value(value: orderService),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+        ),
+      ),
+    );
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Checkout'));
+    await tester.pump(); // Start loading
+    await tester.pump(); // Finish async
+    await tester.pumpAndSettle(); // Dialog
+
+    expect(orderService.placeOrderCalled, true);
+    expect(cartService.items.isEmpty, true);
+    
+    expect(find.text('Order Placed'), findsOneWidget);
+    
+    await tester.tap(find.text('View Orders'));
+    await tester.pumpAndSettle();
+    
+    expect(find.text('Account Page'), findsOneWidget);
+  });
 }
 
