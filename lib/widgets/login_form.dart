@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:union_shop/services/auth_service.dart';
 
 class LoginForm extends StatefulWidget {
   final VoidCallback onToggle;
@@ -65,9 +68,23 @@ class _LoginFormState extends State<LoginForm> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  // Process data.
+                  try {
+                    await context.read<AuthService>().signIn(
+                          _emailController.text.trim(),
+                          _passwordController.text.trim(),
+                        );
+                    if (context.mounted) {
+                      context.go('/');
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Login failed: $e')),
+                      );
+                    }
+                  }
                 }
               },
               child: const Text('Login'),
