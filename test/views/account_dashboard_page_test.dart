@@ -148,4 +148,29 @@ void main() {
     expect(find.text('Saved Addresses'), findsOneWidget);
     expect(find.text('Sign Out'), findsOneWidget);
   });
+  
+  testWidgets('AccountDashboardPage shows "No orders yet" when list is empty', (WidgetTester tester) async {
+    final mockUser = MockUser('test@example.com', 'user1');
+    
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<AuthService>(
+            create: (_) => MockAuthService(currentUser: mockUser),
+          ),
+          ChangeNotifierProvider<OrderService>(
+            create: (_) => MockOrderService(orders: []),
+          ),
+        ],
+        child: const MaterialApp(
+          home: AccountDashboardPage(),
+        ),
+      ),
+    );
+
+    // Allow stream builder to build
+    await tester.pump();
+
+    expect(find.text('No orders yet.'), findsOneWidget);
+  });
 }
