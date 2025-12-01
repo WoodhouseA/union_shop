@@ -105,5 +105,31 @@ void main() {
 
       expect(product.onSale, false);
     });
+
+    test('toJson should convert Product to Map', () {
+      final product = Product(
+        id: '1',
+        collectionId: 'col1',
+        name: 'Test Product',
+        price: 10.0,
+        onSale: true,
+        salePrice: 8.0,
+        imageUrl: 'http://example.com/image.jpg',
+        sizes: ['S'],
+        colors: ['Red'],
+      );
+
+      final json = product.toJson();
+
+      expect(json['id'], '1');
+      expect(json['collectionId'], 'col1');
+      expect(json['name'], 'Test Product');
+      expect(json['price'], 10.0);
+      expect(json['onSale'], true);
+      expect(json['salePrice'], 8.0);
+      expect(json['imageUrl'], 'http://example.com/image.jpg');
+      expect(json['sizes'], ['S']);
+      expect(json['colors'], ['Red']);
+    });
   });
 }
