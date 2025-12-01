@@ -8,6 +8,7 @@ import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/router.dart';
 import 'package:union_shop/services/auth_service.dart';
 import 'package:union_shop/services/cart_service.dart';
+import 'package:union_shop/services/order_service.dart';
 import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/widgets/product_card.dart';
 
@@ -22,6 +23,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => CartService()),
         ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (context) => OrderService()),
         StreamProvider<User?>(
           create: (context) => context.read<AuthService>().authStateChanges,
           initialData: null,
