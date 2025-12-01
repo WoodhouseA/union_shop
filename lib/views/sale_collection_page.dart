@@ -16,9 +16,9 @@ class _SaleCollectionPageState extends State<SaleCollectionPage> {
   late Future<List<Product>> _productsFuture;
 
   @override
-  void initState() {
-    super.initState();
-    _productsFuture = _productService.getSaleProducts();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _productsFuture = _productService.getSaleProducts(bundle: DefaultAssetBundle.of(context));
   }
 
   @override
