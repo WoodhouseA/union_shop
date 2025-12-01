@@ -14,7 +14,7 @@ class MockProductService extends ProductService {
   MockProductService({this.mockProducts = const [], this.shouldFail = false});
 
   @override
-  Future<List<Product>> getProductsByCollection(String collectionId) async {
+  Future<List<Product>> getProductsByCollection(String collectionId, {AssetBundle? bundle}) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 100));
 
