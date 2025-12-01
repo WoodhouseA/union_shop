@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +21,9 @@ import 'package:union_shop/views/print_shack_about_page.dart';
 import 'package:union_shop/views/print_shack_page.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/search_results_page.dart';
-
 import 'package:union_shop/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'helpers/test_asset_bundle.dart';
 
 // --- Mock HttpOverrides for NetworkImage ---
 
@@ -100,15 +96,6 @@ class MockHttpClientResponse extends Fake implements HttpClientResponse {
     }
   }
 }
-
-final List<int> kTransparentImage = <int>[
-  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49,
-  0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06,
-  0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44,
-  0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00, 0x05, 0x00, 0x01, 0x0D,
-  0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42,
-  0x60, 0x82,
-];
 
 // --- Mock CartService ---
 
@@ -212,27 +199,10 @@ void main() {
     HttpOverrides.global = TestHttpOverrides();
     
     testRouter = createRouter(mockAuthService);
-
-    // Mock asset loading
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMessageHandler('flutter/assets', (ByteData? message) async {
-      if (message == null) return null;
-      final String key = utf8.decode(message.buffer.asUint8List());
-      
-      if (key.contains('collections.json')) {
-         return ByteData.view(
-          Uint8List.fromList(utf8.encode(json.encode(mockCollections))).buffer);
-      }
-
-      return ByteData.view(
-          Uint8List.fromList(utf8.encode(json.encode(mockProducts))).buffer);
-    });
   });
 
   tearDown(() {
     HttpOverrides.global = null;
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMessageHandler('flutter/assets', null);
   });
 
   Widget createTestApp() {
@@ -242,8 +212,11 @@ void main() {
         ChangeNotifierProvider<AuthService>.value(value: mockAuthService),
         ChangeNotifierProvider<OrderService>.value(value: mockOrderService),
       ],
-      child: MaterialApp.router(
-        routerConfig: testRouter,
+      child: DefaultAssetBundle(
+        bundle: TestAssetBundle(products: mockProducts, collections: mockCollections),
+        child: MaterialApp.router(
+          routerConfig: testRouter,
+        ),
       ),
     );
   }
