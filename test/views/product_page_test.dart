@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +13,12 @@ import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/views/product_page.dart';
 
 class MockCartService extends CartService {
+  MockCartService()
+      : super(
+          auth: MockFirebaseAuth(),
+          firestore: FakeFirebaseFirestore(),
+        );
+
   Product? lastAddedProduct;
   int totalQuantityAdded = 0;
   String? lastSize;
