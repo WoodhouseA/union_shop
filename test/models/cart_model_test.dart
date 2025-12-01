@@ -51,5 +51,37 @@ void main() {
 
       expect(cartItem.quantity, 5);
     });
+
+    test('toJson should convert CartItem to Map', () {
+      final cartItem = CartItem(
+        product: testProduct,
+        quantity: 2,
+        size: 'M',
+        color: 'Red',
+      );
+
+      final json = cartItem.toJson();
+
+      expect(json['quantity'], 2);
+      expect(json['size'], 'M');
+      expect(json['color'], 'Red');
+      expect(json['product']['id'], '1');
+    });
+
+    test('fromJson should convert Map to CartItem', () {
+      final json = {
+        'product': testProduct.toJson(),
+        'quantity': 2,
+        'size': 'M',
+        'color': 'Red',
+      };
+
+      final cartItem = CartItem.fromJson(json);
+
+      expect(cartItem.quantity, 2);
+      expect(cartItem.size, 'M');
+      expect(cartItem.color, 'Red');
+      expect(cartItem.product.id, '1');
+    });
   });
 }
