@@ -26,5 +26,12 @@ void main() {
       expect(user!.email, 'test@example.com');
       expect(authService.currentUser, isNotNull);
     });
+
+    test('signUp should create and sign in user', () async {
+      final user = await authService.signUp('new@example.com', 'password');
+      expect(user, isNotNull);
+      expect(user!.email, 'new@example.com');
+      expect(authService.currentUser, isNotNull);
+    });
   });
 }
