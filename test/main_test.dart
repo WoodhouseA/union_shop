@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,7 @@ import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/auth_service.dart';
 import 'package:union_shop/services/order_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'helpers/test_asset_bundle.dart';
 
 // --- Mock AuthService ---
 
@@ -77,28 +77,10 @@ void main() {
   setUp(() {
     rootBundle.evict('assets/products.json');
     HttpOverrides.global = TestHttpOverrides();
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
-      'flutter/assets',
-      (ByteData? message) async {
-        if (message == null) return null;
-        final key = utf8.decode(message.buffer.asUint8List(message.offsetInBytes, message.lengthInBytes));
-        
-        if (key == 'assets/products.json') {
-          final String jsonStr = json.encode(mockProducts);
-          final Uint8List encoded = utf8.encode(jsonStr);
-          return ByteData.view(encoded.buffer);
-        }
-        return null;
-      },
-    );
   });
 
   tearDown(() {
     HttpOverrides.global = null;
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
-      'flutter/assets',
-      null,
-    );
   });
 
   Widget createWidgetUnderTest() {
@@ -130,8 +112,11 @@ void main() {
         ChangeNotifierProvider<AuthService>(create: (_) => MockAuthService()),
         ChangeNotifierProvider<OrderService>(create: (_) => MockOrderService()),
       ],
-      child: MaterialApp.router(
-        routerConfig: router,
+      child: DefaultAssetBundle(
+        bundle: TestAssetBundle(products: mockProducts),
+        child: MaterialApp.router(
+          routerConfig: router,
+        ),
       ),
     );
   }
