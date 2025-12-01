@@ -161,7 +161,8 @@ void main() {
     await waitForLoad(tester);
 
     // Check Hero Section
-    expect(find.text('CHECK OUT THE SALE!'), findsNWidgets(2)); // Title and Button
+    expect(find.text('CHECK OUT THE SALE!'), findsOneWidget); // Title
+    expect(find.text('GO TO SALE'), findsOneWidget); // Button
     expect(find.text("Don't miss out on our exclusive sale items!"), findsOneWidget);
 
     // Check Products Section
@@ -174,7 +175,7 @@ void main() {
     await tester.pumpWidget(createWidgetUnderTest());
     await waitForLoad(tester);
 
-    final saleButton = find.widgetWithText(ElevatedButton, 'CHECK OUT THE SALE!');
+    final saleButton = find.widgetWithText(ElevatedButton, 'GO TO SALE');
     await tester.ensureVisible(saleButton);
     await tester.tap(saleButton);
     await tester.pumpAndSettle();
