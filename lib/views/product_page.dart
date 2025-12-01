@@ -21,16 +21,17 @@ class _ProductPageState extends State<ProductPage> {
   String? _selectedColor;
 
   @override
-  void initState() {
-    super.initState();
-    _productFuture = _productService.getProductById(widget.productId);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _productFuture = _productService.getProductById(widget.productId, bundle: DefaultAssetBundle.of(context));
     _productFuture.then((product) {
-      if (product.sizes.isNotEmpty) {
+      if (!mounted) return;
+      if (product.sizes.isNotEmpty && _selectedSize == null) {
         setState(() {
           _selectedSize = product.sizes.first;
         });
       }
-      if (product.colors.isNotEmpty) {
+      if (product.colors.isNotEmpty && _selectedColor == null) {
         setState(() {
           _selectedColor = product.colors.first;
         });
