@@ -145,4 +145,37 @@ void main() {
     expect(find.text('BROWSE COLLECTIONS'), findsOneWidget);
     expect(find.text('VIEW COLLECTIONS'), findsOneWidget);
   });
+
+  testWidgets('HomeCarousel manual navigation works (Desktop)',
+      (WidgetTester tester) async {
+    // Set size to desktop to show arrows
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // Find next arrow
+    final nextArrow = find.byIcon(Icons.arrow_forward_ios);
+    expect(nextArrow, findsOneWidget);
+
+    // Tap next
+    await tester.tap(nextArrow);
+    await tester.pumpAndSettle();
+
+    // Should be on second item
+    expect(find.text('BROWSE COLLECTIONS'), findsOneWidget);
+
+    // Find prev arrow
+    final prevArrow = find.byIcon(Icons.arrow_back_ios);
+    expect(prevArrow, findsOneWidget);
+
+    // Tap prev
+    await tester.tap(prevArrow);
+    await tester.pumpAndSettle();
+
+    // Should be back on first item
+    expect(find.text('CHECK OUT THE SALE!'), findsOneWidget);
+  });
 }
