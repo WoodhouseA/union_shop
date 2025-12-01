@@ -8,6 +8,31 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/main.dart';
 import 'package:union_shop/services/cart_service.dart';
+import 'package:union_shop/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+// --- Mock AuthService ---
+
+class MockAuthService extends ChangeNotifier implements AuthService {
+  @override
+  User? get currentUser => null;
+
+  @override
+  Stream<User?> get authStateChanges => Stream.value(null);
+
+  @override
+  Future<User?> signIn(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<User?> signUp(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
 
 void main() {
   final mockProducts = [
@@ -85,8 +110,11 @@ void main() {
       ],
     );
 
-    return ChangeNotifierProvider(
-      create: (_) => CartService(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartService()),
+        ChangeNotifierProvider<AuthService>(create: (_) => MockAuthService()),
+      ],
       child: MaterialApp.router(
         routerConfig: router,
       ),
