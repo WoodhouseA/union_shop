@@ -67,4 +67,52 @@ final List<int> _transparentImage = [
 ];
 
 void main() {
+  setUpAll(() {
+    HttpOverrides.global = TestHttpOverrides();
+  });
+
+  Widget createWidgetUnderTest() {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: HomeCarousel()),
+        ),
+        GoRoute(
+          path: '/sale',
+          builder: (context, state) => const Scaffold(body: Text('Sale Page')),
+        ),
+        GoRoute(
+          path: '/collections',
+          builder: (context, state) =>
+              const Scaffold(body: Text('Collections Page')),
+        ),
+        GoRoute(
+          path: '/print-shack',
+          builder: (context, state) =>
+              const Scaffold(body: Text('Print Shack Page')),
+        ),
+        GoRoute(
+          path: '/about',
+          builder: (context, state) => const Scaffold(body: Text('About Page')),
+        ),
+      ],
+    );
+
+    return MaterialApp.router(
+      routerConfig: router,
+    );
+  }
+
+  testWidgets('HomeCarousel displays first item correctly',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump(); // Allow image loading
+
+    expect(find.text('CHECK OUT THE SALE!'), findsOneWidget);
+    expect(find.text("Don't miss out on our exclusive sale items!"),
+        findsOneWidget);
+    expect(find.text('GO TO SALE'), findsOneWidget);
+  });
 }
