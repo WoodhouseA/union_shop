@@ -123,6 +123,9 @@ class AccountDashboardPage extends StatelessWidget {
             onPressed: () async {
               await context.read<AuthService>().signOut();
               if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Signed out successfully')),
+                );
                 context.go('/');
               }
             },
