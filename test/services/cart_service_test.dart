@@ -1,3 +1,5 @@
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/services/cart_service.dart';
@@ -6,9 +8,14 @@ void main() {
   late CartService cartService;
   late Product testProduct;
   late Product saleProduct;
+  late MockFirebaseAuth mockAuth;
+  late FakeFirebaseFirestore mockFirestore;
 
   setUp(() {
-    cartService = CartService();
+    mockAuth = MockFirebaseAuth();
+    mockFirestore = FakeFirebaseFirestore();
+    cartService = CartService(auth: mockAuth, firestore: mockFirestore);
+
     testProduct = Product(
       id: '1',
       collectionId: 'col1',
