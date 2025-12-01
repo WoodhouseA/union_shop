@@ -11,7 +11,8 @@ A Flutter-based e-commerce application for the University of Portsmouth Union Sh
 *   **Simulated Checkout:** A demonstration of the checkout process.
 *   **Responsive Design:** The application is designed to work seamlessly on both mobile and desktop web/native platforms.
 *   **Sale Section:** Dedicated view for discounted items.
-*   **Authentication UI:** Interactive Login and Sign Up forms.
+*   **User Accounts:** Secure login and sign-up functionality using Firebase Authentication.
+*   **Order History:** View past orders and their status in the Account Dashboard, stored in Cloud Firestore.
 *   **Print Shack Information:** Detailed service information, pricing, and terms for the Print Shack.
 *   **Search Functionality:** Quickly find products by name or keyword using the search bar in the header or footer.
 
@@ -88,9 +89,9 @@ The project follows a standard Flutter feature-based architecture:
 *   **`lib/`**: Contains the main source code.
     *   **`main.dart`**: The entry point of the application.
     *   **`router.dart`**: Configuration for application routing using `go_router`.
-    *   **`models/`**: Data models (e.g., `Product`, `CartItem`).
-    *   **`services/`**: Business logic and data fetching (e.g., `CartService`, `ProductService`).
-    *   **`views/`**: Screen widgets (e.g., `HomeScreen`, `ProductPage`, `CartPage`, `AuthPage`, `PrintShackPage`, `PrintShackAboutPage`, `SaleCollectionPage`, `SearchResultsPage`).
+    *   **`models/`**: Data models (e.g., `Product`, `CartItem`, `OrderModel`).
+    *   **`services/`**: Business logic and data fetching (e.g., `CartService`, `ProductService`, `OrderService`, `AuthService`).
+    *   **`views/`**: Screen widgets (e.g., `HomeScreen`, `ProductPage`, `CartPage`, `AuthPage`, `AccountDashboardPage`, `PrintShackPage`, `PrintShackAboutPage`, `SaleCollectionPage`, `SearchResultsPage`).
     *   **`widgets/`**: Reusable UI components (e.g., `ProductCard`, `Footer`, `AppBar`, `LoginForm`, `SignupForm`).
 *   **`assets/`**: Contains static assets like images and JSON data files (`products.json`, `collections.json`).
 *   **`test/`**: Contains unit and widget tests.
@@ -98,15 +99,16 @@ The project follows a standard Flutter feature-based architecture:
 ### Key Technologies
 
 *   **Flutter:** UI Toolkit.
-*   **Provider:** State management for the shopping cart.
+*   **Firebase Auth:** Secure user authentication.
+*   **Cloud Firestore:** NoSQL cloud database for storing order history.
+*   **Provider:** State management for the shopping cart and authentication state.
 *   **GoRouter:** Declarative routing package.
 *   **JSON:** Used for mocking product data.
 
 ## Known Issues & Limitations
 
-*   **Mock Data:** The application currently uses local JSON files (`assets/products.json`) to simulate a backend database. Changes to products are not persisted.
-*   **Simulated Checkout:** The checkout process is purely visual and does not process actual payments.
-*   **Authentication:** The authentication flow is a placeholder and does not connect to a real user database.
+*   **Mock Data:** The application uses local JSON files (`assets/products.json`) for product data. However, User and Order data are persisted in Firebase.
+*   **Simulated Checkout:** The checkout process is purely visual and does not process actual payments, though orders are saved to the database.
 
 ## Contact Information
 
