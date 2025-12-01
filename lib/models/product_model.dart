@@ -34,4 +34,18 @@ class Product {
       colors: List<String>.from(json['colors']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'collectionId': collectionId,
+      'name': name,
+      'price': price,
+      'onSale': onSale,
+      'salePrice': salePrice,
+      'imageUrl': imageUrl,
+      'sizes': sizes,
+      'colors': colors,
+    };
+  }
 }
