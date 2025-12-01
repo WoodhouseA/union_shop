@@ -39,32 +39,28 @@ class _HomeCarouselState extends State<HomeCarousel> {
       description: "Don't miss out on our exclusive sale items!",
       buttonText: 'GO TO SALE',
       route: '/sale',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
+      assetPath: 'assets/images/summer/summer_hat.png',
     ),
     CarouselItem(
       title: 'BROWSE COLLECTIONS',
       description: 'Explore our wide range of university merchandise.',
       buttonText: 'VIEW COLLECTIONS',
       route: '/collections',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
+      assetPath: 'assets/images/graduation/graduation_hoodie.png',
     ),
     CarouselItem(
       title: 'PRINT SHACK',
       description: 'Custom printing services for all your needs.',
       buttonText: 'VISIT PRINT SHACK',
       route: '/print-shack',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
+      assetPath: 'assets/images/merchandise/essential_stationary_set.png',
     ),
     CarouselItem(
       title: 'ABOUT US',
       description: 'Learn more about the Union Shop and what we do.',
       buttonText: 'READ MORE',
       route: '/about',
-      imageUrl:
-          'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
+      assetPath: 'assets/images/bears/brown_bear.png',
     ),
   ];
 
