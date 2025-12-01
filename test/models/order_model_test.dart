@@ -27,5 +27,22 @@ void main() {
     final testDate = DateTime(2023, 1, 1, 12, 0, 0);
     final testTimestamp = Timestamp.fromDate(testDate);
 
+    test('should create OrderModel with required fields', () {
+      final order = OrderModel(
+        id: 'order1',
+        userId: 'user1',
+        items: [testItem],
+        totalPrice: 20.0,
+        date: testDate,
+      );
+
+      expect(order.id, 'order1');
+      expect(order.userId, 'user1');
+      expect(order.items.length, 1);
+      expect(order.items.first.product.id, '1');
+      expect(order.totalPrice, 20.0);
+      expect(order.date, testDate);
+      expect(order.status, 'Pending'); // Default value
+    });
   });
 }
