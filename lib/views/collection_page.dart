@@ -44,12 +44,19 @@ class _CollectionPageState extends State<CollectionPage> {
   void initState() {
     super.initState();
     _productService = widget.productService ?? ProductService();
-    _loadProducts();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_allProducts.isEmpty && _isLoading) {
+      _loadProducts();
+    }
   }
 
   Future<void> _loadProducts() async {
     try {
-      final products = await _productService.getProductsByCollection(widget.collectionId);
+      final products = await _productService.getProductsByCollection(widget.collectionId, bundle: DefaultAssetBundle.of(context));
       
       double max = 1000;
       if (products.isNotEmpty) {
