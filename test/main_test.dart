@@ -7,8 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/main.dart';
+import 'package:union_shop/models/cart_model.dart';
+import 'package:union_shop/models/order_model.dart';
 import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/auth_service.dart';
+import 'package:union_shop/services/order_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // --- Mock AuthService ---
@@ -32,6 +35,17 @@ class MockAuthService extends ChangeNotifier implements AuthService {
 
   @override
   Future<void> signOut() async {}
+}
+
+// --- Mock OrderService ---
+class MockOrderService extends ChangeNotifier implements OrderService {
+  @override
+  Future<void> placeOrder(String userId, List<CartItem> items, double totalPrice) async {}
+
+  @override
+  Stream<List<OrderModel>> getUserOrders(String userId) {
+    return Stream.value([]);
+  }
 }
 
 void main() {
@@ -114,6 +128,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => CartService()),
         ChangeNotifierProvider<AuthService>(create: (_) => MockAuthService()),
+        ChangeNotifierProvider<OrderService>(create: (_) => MockOrderService()),
       ],
       child: MaterialApp.router(
         routerConfig: router,
