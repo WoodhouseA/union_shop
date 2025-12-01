@@ -178,4 +178,20 @@ void main() {
     // Should be back on first item
     expect(find.text('CHECK OUT THE SALE!'), findsOneWidget);
   });
+
+  testWidgets('HomeCarousel indicators work', (WidgetTester tester) async {
+    // Set a known size
+    tester.view.physicalSize = const Size(800, 600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // Swipe left to go to next
+    await tester.drag(find.byType(PageView), const Offset(-500, 0));
+    await tester.pumpAndSettle();
+
+    expect(find.text('BROWSE COLLECTIONS'), findsOneWidget);
+  });
 }
