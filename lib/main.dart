@@ -1,23 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:union_shop/firebase_options.dart';
 import 'package:union_shop/models/product_model.dart';
 import 'package:union_shop/router.dart';
+import 'package:union_shop/services/auth_service.dart';
 import 'package:union_shop/services/cart_service.dart';
 import 'package:union_shop/services/product_service.dart';
 import 'package:union_shop/widgets/product_card.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => CartService(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartService()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
+        StreamProvider<User?>(
+          create: (context) => context.read<AuthService>().authStateChanges,
+          initialData: null,
+        ),
+      ],
       child: const UnionShopApp(),
     ),
   );
 }
 
-class UnionShopApp extends StatelessWidget {
+class UnionShopApp extends StatefulWidget {
   const UnionShopApp({super.key});
+
+  @override
+  State<UnionShopApp> createState() => _UnionShopAppState();
+}
+
+class _UnionShopAppState extends State<UnionShopApp> {
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    final authService = context.read<AuthService>();
+    _router = createRouter(authService);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +57,7 @@ class UnionShopApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
       ),
-      routerConfig: router,
+      routerConfig: _router,
     );
   }
 }
