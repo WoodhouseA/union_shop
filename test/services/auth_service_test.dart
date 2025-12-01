@@ -33,5 +33,13 @@ void main() {
       expect(user!.email, 'new@example.com');
       expect(authService.currentUser, isNotNull);
     });
+
+    test('signOut should sign out user', () async {
+      await authService.signUp('test@example.com', 'password');
+      expect(authService.currentUser, isNotNull);
+
+      await authService.signOut();
+      expect(authService.currentUser, isNull);
+    });
   });
 }
