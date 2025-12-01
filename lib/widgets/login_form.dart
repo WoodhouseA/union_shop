@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginForm extends StatefulWidget {
   final VoidCallback onToggle;
@@ -77,6 +78,24 @@ class _LoginFormState extends State<LoginForm> {
                         );
                     if (context.mounted) {
                       context.go('/');
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    String message;
+                    if (e.code == 'user-not-found') {
+                      message = 'No user found for that email.';
+                    } else if (e.code == 'wrong-password') {
+                      message = 'Wrong password provided.';
+                    } else if (e.code == 'invalid-email') {
+                      message = 'The email address is invalid.';
+                    } else if (e.code == 'invalid-credential') {
+                      message = 'Invalid credentials. Please check your email and password.';
+                    } else {
+                      message = 'Login failed: ${e.message}';
+                    }
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(message)),
+                      );
                     }
                   } catch (e) {
                     if (context.mounted) {
