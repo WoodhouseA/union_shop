@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:union_shop/widgets/signup_form.dart';
+import 'package:union_shop/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+// --- Mock AuthService ---
+
+class MockAuthService extends ChangeNotifier implements AuthService {
+  @override
+  User? get currentUser => null;
+
+  @override
+  Stream<User?> get authStateChanges => Stream.value(null);
+
+  @override
+  Future<User?> signIn(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<User?> signUp(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
 
 void main() {
   Widget createTestWidget({VoidCallback? onToggle}) {
-    return MaterialApp(
-      home: Scaffold(
-        body: SignupForm(
-          onToggle: onToggle ?? () {},
+    return ChangeNotifierProvider<AuthService>(
+      create: (_) => MockAuthService(),
+      child: MaterialApp(
+        home: Scaffold(
+          body: SignupForm(
+            onToggle: onToggle ?? () {},
+          ),
         ),
       ),
     );
