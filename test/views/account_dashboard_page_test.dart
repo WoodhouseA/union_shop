@@ -57,4 +57,21 @@ void main() {
 
     expect(find.text('Not logged in'), findsOneWidget);
   });
+
+  testWidgets('AccountDashboardPage shows user email when logged in', (WidgetTester tester) async {
+    final mockUser = MockUser('test@example.com');
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AuthService>(
+        create: (_) => MockAuthService(currentUser: mockUser),
+        child: const MaterialApp(
+          home: AccountDashboardPage(),
+        ),
+      ),
+    );
+
+    expect(find.text('Welcome, test@example.com'), findsOneWidget);
+    expect(find.text('Order History'), findsOneWidget);
+    expect(find.text('Saved Addresses'), findsOneWidget);
+    expect(find.text('Sign Out'), findsOneWidget);
+  });
 }
