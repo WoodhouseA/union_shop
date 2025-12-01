@@ -88,11 +88,11 @@ flutter test
 The project follows a standard Flutter feature-based architecture:
 
 *   **`lib/`**: Contains the main source code.
-    *   **`main.dart`**: The entry point of the application.
+    *   **`main.dart`**: The entry point of the application. Contains the `HomeScreen` widget.
     *   **`router.dart`**: Configuration for application routing using `go_router`.
     *   **`models/`**: Data models (e.g., `Product`, `CartItem`, `OrderModel`).
-    *   **`services/`**: Business logic and data fetching (e.g., `CartService`, `ProductService`, `OrderService`, `AuthService`).
-    *   **`views/`**: Screen widgets (e.g., `HomeScreen`, `ProductPage`, `CartPage`, `AuthPage`, `AccountDashboardPage`, `PrintShackPage`, `PrintShackAboutPage`, `SaleCollectionPage`, `SearchResultsPage`).
+    *   **`services/`**: Business logic and data fetching (e.g., `CartService`, `ProductService`, `OrderService`, `AuthService`, `CollectionService`).
+    *   **`views/`**: Screen widgets (e.g., `ProductPage`, `CartPage`, `AuthPage`, `AccountDashboardPage`, `PrintShackPage`, `PrintShackAboutPage`, `SaleCollectionPage`, `SearchResultsPage`, `CollectionsPage`, `CollectionPage`, `AboutUsPage`).
     *   **`widgets/`**: Reusable UI components (e.g., `ProductCard`, `Footer`, `AppBar`, `LoginForm`, `SignupForm`, `HomeCarousel`).
 *   **`assets/`**: Contains static assets like images and JSON data files (`products.json`, `collections.json`).
 *   **`test/`**: Contains unit and widget tests.
