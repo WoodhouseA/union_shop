@@ -1,11 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:union_shop/views/auth_page.dart';
+import 'package:union_shop/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+// --- Mock AuthService ---
+
+class MockAuthService extends ChangeNotifier implements AuthService {
+  @override
+  User? get currentUser => null;
+
+  @override
+  Stream<User?> get authStateChanges => Stream.value(null);
+
+  @override
+  Future<User?> signIn(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<User?> signUp(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
 
 void main() {
   testWidgets('AuthPage toggles between Login and Signup', (WidgetTester tester) async {
-    // Build the AuthPage widget wrapped in a Scaffold
-    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: AuthPage())));
+    // Build the AuthPage widget wrapped in a Scaffold and Provider
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AuthService>(
+        create: (_) => MockAuthService(),
+        child: const MaterialApp(
+          home: Scaffold(body: AuthPage()),
+        ),
+      ),
+    );
 
     // Verify that the Login page is shown initially
     expect(find.text('Login'), findsWidgets); // Finds title and button
