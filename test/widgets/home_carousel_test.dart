@@ -115,4 +115,34 @@ void main() {
         findsOneWidget);
     expect(find.text('GO TO SALE'), findsOneWidget);
   });
+
+  testWidgets('HomeCarousel navigates when button is pressed',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    final button = find.widgetWithText(ElevatedButton, 'GO TO SALE');
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sale Page'), findsOneWidget);
+  });
+
+  testWidgets('HomeCarousel auto-plays to next item',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // Initial state
+    expect(find.text('CHECK OUT THE SALE!'), findsOneWidget);
+
+    // Wait for timer (5 seconds) + animation
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+
+    // Should be on second item
+    expect(find.text('BROWSE COLLECTIONS'), findsOneWidget);
+    expect(find.text('VIEW COLLECTIONS'), findsOneWidget);
+  });
 }
