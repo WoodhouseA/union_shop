@@ -25,16 +25,16 @@ class CartService with ChangeNotifier {
   List<CartItem> get items => _items;
 
   double get totalPrice {
-    return _items.fold(0.0, (sum, item) {
+    return _items.fold(0.0, (currentTotal, item) {
       final price = (item.product.onSale && item.product.salePrice != null)
           ? item.product.salePrice!
           : item.product.price;
-      return sum + (price * item.quantity);
+      return currentTotal + (price * item.quantity);
     });
   }
 
   int get totalItems {
-    return _items.fold(0, (sum, item) => sum + item.quantity);
+    return _items.fold(0, (currentTotal, item) => currentTotal + item.quantity);
   }
 
   Future<void> _loadCart() async {
