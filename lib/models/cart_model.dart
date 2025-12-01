@@ -16,4 +16,26 @@ class CartItem {
     this.customText,
     this.customColorName,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'product': product.toJson(),
+      'quantity': quantity,
+      'size': size,
+      'color': color,
+      'customText': customText,
+      'customColorName': customColorName,
+    };
+  }
+
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    return CartItem(
+      product: Product.fromJson(json['product']),
+      quantity: json['quantity'],
+      size: json['size'],
+      color: json['color'],
+      customText: json['customText'],
+      customColorName: json['customColorName'],
+    );
+  }
 }
