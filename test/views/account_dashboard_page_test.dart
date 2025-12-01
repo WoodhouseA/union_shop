@@ -45,4 +45,16 @@ class MockUser extends Fake implements User {
 }
 
 void main() {
+  testWidgets('AccountDashboardPage shows "Not logged in" when no user', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AuthService>(
+        create: (_) => MockAuthService(currentUser: null),
+        child: const MaterialApp(
+          home: AccountDashboardPage(),
+        ),
+      ),
+    );
+
+    expect(find.text('Not logged in'), findsOneWidget);
+  });
 }
