@@ -15,6 +15,7 @@ A Flutter-based e-commerce application for the University of Portsmouth Union Sh
 *   **Order History:** View past orders and their status in the Account Dashboard, stored in Cloud Firestore.
 *   **Print Shack Information:** Detailed service information, pricing, and terms for the Print Shack.
 *   **Search Functionality:** Quickly find products by name or keyword using the search bar in the header or footer.
+*   **Interactive Home Carousel:** A dynamic carousel on the home page featuring latest sales, collections, and services with auto-play and navigation controls.
 
 ## Installation and Setup
 
@@ -51,7 +52,7 @@ A Flutter-based e-commerce application for the University of Portsmouth Union Sh
 
 ### Main Features
 
-1.  **Home Page:** The landing page displays featured products and a hero section highlighting current sales.
+1.  **Home Page:** The landing page features an interactive carousel showcasing sales, collections, and services, followed by a grid of our products.
 2.  **Navigation:** Use the top navigation bar (desktop) or the hamburger menu (mobile) to navigate between Home, Collections, Sale, Print Shack, and About Us.
 3.  **Search:**
     *   Use the search bar in the navigation menu (desktop) or click the search icon (mobile).
@@ -92,7 +93,7 @@ The project follows a standard Flutter feature-based architecture:
     *   **`models/`**: Data models (e.g., `Product`, `CartItem`, `OrderModel`).
     *   **`services/`**: Business logic and data fetching (e.g., `CartService`, `ProductService`, `OrderService`, `AuthService`).
     *   **`views/`**: Screen widgets (e.g., `HomeScreen`, `ProductPage`, `CartPage`, `AuthPage`, `AccountDashboardPage`, `PrintShackPage`, `PrintShackAboutPage`, `SaleCollectionPage`, `SearchResultsPage`).
-    *   **`widgets/`**: Reusable UI components (e.g., `ProductCard`, `Footer`, `AppBar`, `LoginForm`, `SignupForm`).
+    *   **`widgets/`**: Reusable UI components (e.g., `ProductCard`, `Footer`, `AppBar`, `LoginForm`, `SignupForm`, `HomeCarousel`).
 *   **`assets/`**: Contains static assets like images and JSON data files (`products.json`, `collections.json`).
 *   **`test/`**: Contains unit and widget tests.
 
@@ -104,6 +105,7 @@ The project follows a standard Flutter feature-based architecture:
 *   **Provider:** State management for the shopping cart and authentication state.
 *   **GoRouter:** Declarative routing package.
 *   **JSON:** Used for mocking product data.
+*   **Testing:** `flutter_test`, `firebase_auth_mocks`, `fake_cloud_firestore`.
 
 ## Known Issues & Limitations
 
