@@ -1,9 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:union_shop/models/cart_model.dart';
 import 'package:union_shop/models/product_model.dart';
 
 class CartService with ChangeNotifier {
-  final List<CartItem> _items = [];
+  List<CartItem> _items = [];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+
+  CartService() {
+    _auth.authStateChanges().listen((user) {
+      _user = user;
+      if (user != null) {
+        _loadCart();
+      } else {
+        _items.clear();
+        notifyListeners();
+      }
+    });
+  }
 
   List<CartItem> get items => _items;
 
@@ -18,6 +35,32 @@ class CartService with ChangeNotifier {
 
   int get totalItems {
     return _items.fold(0, (sum, item) => sum + item.quantity);
+  }
+
+  Future<void> _loadCart() async {
+    if (_user == null) return;
+    try {
+      final doc = await _firestore.collection('users').doc(_user!.uid).get();
+      if (doc.exists && doc.data() != null && doc.data()!.containsKey('cart')) {
+        final List<dynamic> cartData = doc.data()!['cart'];
+        _items = cartData.map((item) => CartItem.fromJson(item)).toList();
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading cart: $e');
+    }
+  }
+
+  Future<void> _saveCart() async {
+    if (_user == null) return;
+    try {
+      final cartData = _items.map((item) => item.toJson()).toList();
+      await _firestore.collection('users').doc(_user!.uid).set({
+        'cart': cartData,
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('Error saving cart: $e');
+    }
   }
 
   void addToCart(Product product,
@@ -55,6 +98,7 @@ class CartService with ChangeNotifier {
       ));
     }
     notifyListeners();
+    _saveCart();
   }
 
   void removeFromCart(String productId, String? size, String? color,
@@ -66,6 +110,7 @@ class CartService with ChangeNotifier {
         item.customText == customText &&
         item.customColorName == customColorName);
     notifyListeners();
+    _saveCart();
   }
 
   void updateQuantity(String productId, int quantity, String? size, String? color,
@@ -83,13 +128,16 @@ class CartService with ChangeNotifier {
         removeFromCart(productId, size, color,
             customText: customText,
             customColorName: customColorName);
+        return;
       }
       notifyListeners();
+      _saveCart();
     }
   }
 
   void clearCart() {
     _items.clear();
     notifyListeners();
+    _saveCart();
   }
 }
