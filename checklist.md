@@ -214,7 +214,7 @@ This checklist breaks down the development of the Union Shop Flutter application
     *   **Quantity Editing:** Implement `updateQuantity` in the `CartPage`.
     *   **Removal:** Implement `removeFromCart` for each item in the cart.
     *   **Price Calculations:** Add a getter for the total price that calculates `sum(item.price * item.quantity)`.
--   [ ] **Implement persistence for the cart:**
+- [x] **Implement persistence for the cart:**
     *   **Logic:** When the cart changes, save it to local storage (e.g., `shared_preferences`). When the app starts, load the cart from local storage.
     *   **Reasoning:** To ensure the user's cart is not lost when they close the app.
 
