@@ -24,6 +24,9 @@ import 'package:union_shop/views/print_shack_page.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/search_results_page.dart';
 
+import 'package:union_shop/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 // --- Mock HttpOverrides for NetworkImage ---
 
 class TestHttpOverrides extends HttpOverrides {
@@ -136,8 +139,32 @@ class MockCartService extends ChangeNotifier implements CartService {
       {String? customText, String? customColorName}) {}
 }
 
+// --- Mock AuthService ---
+
+class MockAuthService extends ChangeNotifier implements AuthService {
+  @override
+  User? get currentUser => null;
+
+  @override
+  Stream<User?> get authStateChanges => Stream.value(null);
+
+  @override
+  Future<User?> signIn(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<User?> signUp(String email, String password) async {
+    return null;
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
+
 void main() {
   late MockCartService mockCartService;
+  late MockAuthService mockAuthService;
   late GoRouter testRouter;
 
   // Sample product data for mocking assets/products.json
@@ -165,12 +192,10 @@ void main() {
 
   setUp(() {
     mockCartService = MockCartService();
+    mockAuthService = MockAuthService();
     HttpOverrides.global = TestHttpOverrides();
     
-    testRouter = GoRouter(
-      routes: router.configuration.routes,
-      initialLocation: '/',
-    );
+    testRouter = createRouter(mockAuthService);
 
     // Mock asset loading
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -195,8 +220,11 @@ void main() {
   });
 
   Widget createTestApp() {
-    return ChangeNotifierProvider<CartService>.value(
-      value: mockCartService,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CartService>.value(value: mockCartService),
+        ChangeNotifierProvider<AuthService>.value(value: mockAuthService),
+      ],
       child: MaterialApp.router(
         routerConfig: testRouter,
       ),
