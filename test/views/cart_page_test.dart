@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -124,6 +126,69 @@ class MockOrderService extends ChangeNotifier implements OrderService {
   }
 }
 
+class MockCartService extends CartService {
+  MockCartService()
+      : super(
+          auth: MockFirebaseAuth(),
+          firestore: FakeFirebaseFirestore(),
+        );
+
+  final List<CartItem> _mockItems = [];
+
+  @override
+  List<CartItem> get items => _mockItems;
+
+  @override
+  double get totalPrice => _mockItems.fold(
+      0.0, (total, item) => total + (item.product.price * item.quantity));
+
+  @override
+  void addToCart(Product product,
+      {String? size,
+      String? color,
+      String? customText,
+      String? customColorName,
+      int quantity = 1}) {
+    _mockItems.add(CartItem(
+        product: product,
+        quantity: quantity,
+        size: size,
+        color: color,
+        customText: customText,
+        customColorName: customColorName));
+    notifyListeners();
+  }
+
+  @override
+  void updateQuantity(
+      String productId, int quantity, String? size, String? color,
+      {String? customText, String? customColorName}) {
+    final index =
+        _mockItems.indexWhere((item) => item.product.id == productId);
+    if (index != -1) {
+      if (quantity > 0) {
+        _mockItems[index].quantity = quantity;
+      } else {
+        _mockItems.removeAt(index);
+      }
+      notifyListeners();
+    }
+  }
+
+  @override
+  void removeFromCart(String productId, String? size, String? color,
+      {String? customText, String? customColorName}) {
+    _mockItems.removeWhere((item) => item.product.id == productId);
+    notifyListeners();
+  }
+
+  @override
+  void clearCart() {
+    _mockItems.clear();
+    notifyListeners();
+  }
+}
+
 void main() {
   setUpAll(() {
     HttpOverrides.global = TestHttpOverrides();
@@ -159,7 +224,7 @@ void main() {
 
   testWidgets('CartPage displays empty message when cart is empty',
       (WidgetTester tester) async {
-    final cartService = CartService();
+    final cartService = MockCartService();
     final authService = MockAuthService();
     final orderService = MockOrderService();
 
@@ -173,7 +238,7 @@ void main() {
   });
 
   testWidgets('CartPage displays items and total', (WidgetTester tester) async {
-    final cartService = CartService();
+    final cartService = MockCartService();
     final authService = MockAuthService();
     final orderService = MockOrderService();
     
@@ -208,7 +273,7 @@ void main() {
 
   testWidgets('CartPage updates quantity and removes item',
       (WidgetTester tester) async {
-    final cartService = CartService();
+    final cartService = MockCartService();
     final authService = MockAuthService();
     final orderService = MockOrderService();
     
@@ -254,7 +319,7 @@ void main() {
 
   testWidgets('CartPage redirects to auth if not logged in on checkout',
       (WidgetTester tester) async {
-    final cartService = CartService();
+    final cartService = MockCartService();
     final authService = MockAuthService(); // Not logged in
     final orderService = MockOrderService();
     
@@ -306,7 +371,7 @@ void main() {
   });
 
   testWidgets('CartPage places order if logged in', (WidgetTester tester) async {
-    final cartService = CartService();
+    final cartService = MockCartService();
     final authService = MockAuthService();
     final orderService = MockOrderService();
     
