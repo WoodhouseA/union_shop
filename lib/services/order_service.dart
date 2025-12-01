@@ -4,7 +4,10 @@ import 'package:union_shop/models/cart_model.dart';
 import 'package:union_shop/models/order_model.dart';
 
 class OrderService extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  OrderService({FirebaseFirestore? firestore})
+      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Future<void> placeOrder(String userId, List<CartItem> items, double totalPrice) async {
     try {
