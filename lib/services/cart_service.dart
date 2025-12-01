@@ -6,11 +6,13 @@ import 'package:union_shop/models/product_model.dart';
 
 class CartService with ChangeNotifier {
   List<CartItem> _items = [];
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
   User? _user;
 
-  CartService() {
+  CartService({FirebaseFirestore? firestore, FirebaseAuth? auth})
+      : _firestore = firestore ?? FirebaseFirestore.instance,
+        _auth = auth ?? FirebaseAuth.instance {
     _auth.authStateChanges().listen((user) {
       _user = user;
       if (user != null) {
