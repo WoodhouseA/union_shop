@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:union_shop/models/cart_model.dart';
+import 'package:union_shop/models/order_model.dart';
 import 'package:union_shop/models/product_model.dart';
+import 'package:union_shop/services/auth_service.dart';
 import 'package:union_shop/services/cart_service.dart';
+import 'package:union_shop/services/order_service.dart';
 import 'package:union_shop/views/cart_page.dart';
 
 class TestHttpOverrides extends HttpOverrides {
@@ -68,29 +73,110 @@ final List<int> _transparentImage = [
   0x44, 0x01, 0x00, 0x3b
 ];
 
+class FakeUser extends Fake implements User {
+  @override
+  final String uid;
+  @override
+  final String? email;
+
+  FakeUser({required this.uid, this.email});
+}
+
+class MockAuthService extends ChangeNotifier implements AuthService {
+  User? _user;
+  @override
+  User? get currentUser => _user;
+
+  @override
+  Stream<User?> get authStateChanges => Stream.value(_user);
+
+  void setUser(User? user) {
+    _user = user;
+    notifyListeners();
+  }
+  
+  @override
+  Future<User?> signIn(String email, String password) async => _user;
+  
+  @override
+  Future<User?> signUp(String email, String password) async => _user;
+  
+  @override
+  Future<void> signOut() async {
+    _user = null;
+    notifyListeners();
+  }
+}
+
+class MockOrderService extends ChangeNotifier implements OrderService {
+  bool placeOrderCalled = false;
+
+  @override
+  Future<void> placeOrder(
+      String userId, List<CartItem> items, double totalPrice) async {
+    placeOrderCalled = true;
+    notifyListeners();
+  }
+
+  @override
+  Stream<List<OrderModel>> getUserOrders(String userId) {
+    return Stream.value([]);
+  }
+}
+
 void main() {
   setUpAll(() {
     HttpOverrides.global = TestHttpOverrides();
   });
 
+  Widget createWidgetUnderTest({
+    required CartService cartService,
+    required AuthService authService,
+    required OrderService orderService,
+  }) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CartService>.value(value: cartService),
+        ChangeNotifierProvider<AuthService>.value(value: authService),
+        ChangeNotifierProvider<OrderService>.value(value: orderService),
+      ],
+      child: MaterialApp(
+        home: const Scaffold(body: CartPage()),
+        onGenerateRoute: (settings) {
+          if (settings.name == '/auth') {
+            return MaterialPageRoute(
+                builder: (_) => const Scaffold(body: Text('Auth Page')));
+          }
+          if (settings.name == '/account') {
+            return MaterialPageRoute(
+                builder: (_) => const Scaffold(body: Text('Account Page')));
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
   testWidgets('CartPage displays empty message when cart is empty',
       (WidgetTester tester) async {
     final cartService = CartService();
+    final authService = MockAuthService();
+    final orderService = MockOrderService();
 
-    await tester.pumpWidget(
-      ChangeNotifierProvider<CartService>.value(
-        value: cartService,
-        child: const MaterialApp(
-          home: Scaffold(body: CartPage()),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createWidgetUnderTest(
+      cartService: cartService,
+      authService: authService,
+      orderService: orderService,
+    ));
 
     expect(find.text('Your cart is empty.'), findsOneWidget);
   });
 
   testWidgets('CartPage displays items and total', (WidgetTester tester) async {
     final cartService = CartService();
+    final authService = MockAuthService();
+    final orderService = MockOrderService();
+    
     final product = Product(
       id: '1',
       collectionId: 'col1',
@@ -104,14 +190,11 @@ void main() {
 
     cartService.addToCart(product, size: 'M', color: 'Red');
 
-    await tester.pumpWidget(
-      ChangeNotifierProvider<CartService>.value(
-        value: cartService,
-        child: const MaterialApp(
-          home: Scaffold(body: CartPage()),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createWidgetUnderTest(
+      cartService: cartService,
+      authService: authService,
+      orderService: orderService,
+    ));
 
     // Allow image loading
     await tester.pump();
@@ -126,6 +209,9 @@ void main() {
   testWidgets('CartPage updates quantity and removes item',
       (WidgetTester tester) async {
     final cartService = CartService();
+    final authService = MockAuthService();
+    final orderService = MockOrderService();
+    
     final product = Product(
       id: '1',
       collectionId: 'col1',
@@ -139,14 +225,11 @@ void main() {
 
     cartService.addToCart(product, size: 'M', color: 'Red');
 
-    await tester.pumpWidget(
-      ChangeNotifierProvider<CartService>.value(
-        value: cartService,
-        child: const MaterialApp(
-          home: Scaffold(body: CartPage()),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createWidgetUnderTest(
+      cartService: cartService,
+      authService: authService,
+      orderService: orderService,
+    ));
 
     // Increment
     await tester.tap(find.byIcon(Icons.add));
@@ -169,8 +252,12 @@ void main() {
     expect(find.text('Your cart is empty.'), findsOneWidget);
   });
 
-  testWidgets('CartPage checkout clears cart', (WidgetTester tester) async {
+  testWidgets('CartPage redirects to auth if not logged in on checkout',
+      (WidgetTester tester) async {
     final cartService = CartService();
+    final authService = MockAuthService(); // Not logged in
+    final orderService = MockOrderService();
+    
     final product = Product(
       id: '1',
       collectionId: 'col1',
@@ -184,18 +271,27 @@ void main() {
 
     cartService.addToCart(product, size: 'M', color: 'Red');
 
+    // Use GoRouter for this test to handle redirection properly
     final router = GoRouter(
       routes: [
         GoRoute(
           path: '/',
           builder: (context, state) => const Scaffold(body: CartPage()),
         ),
+        GoRoute(
+          path: '/auth',
+          builder: (context, state) => const Scaffold(body: Text('Auth Page')),
+        ),
       ],
     );
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<CartService>.value(
-        value: cartService,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CartService>.value(value: cartService),
+          ChangeNotifierProvider<AuthService>.value(value: authService),
+          ChangeNotifierProvider<OrderService>.value(value: orderService),
+        ],
         child: MaterialApp.router(
           routerConfig: router,
         ),
@@ -205,14 +301,8 @@ void main() {
     await tester.tap(find.widgetWithText(ElevatedButton, 'Checkout'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Checkout'), findsNWidgets(2)); // Button and Dialog Title
-    expect(find.text('This is a simulated checkout. Your order has been placed!'),
-        findsOneWidget);
-
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-
-    expect(cartService.items.isEmpty, true);
-    expect(find.text('Your cart is empty.'), findsOneWidget);
+    expect(find.text('Please login to checkout.'), findsOneWidget);
+    expect(find.text('Auth Page'), findsOneWidget);
   });
 }
+
